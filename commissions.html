@@ -1,0 +1,698 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Commissions — Flame488</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,400&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet" />
+  <style>
+  @media (hover: hover) and (pointer: fine) {
+    *, *::before, *::after { cursor: none !important; }
+  }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --bg: #0D0D0F; --surface: #141418; --surface2: #1C1C22;
+      --border: rgba(255,255,255,0.07); --accent: #FF4500; --accent2: #C8873A;
+      --smoke: #2A2A30; --text: #F0EDE8; --muted: rgba(240,237,232,0.5);
+      --display: 'Bebas Neue', sans-serif; --body: 'DM Sans', sans-serif; --mono: 'JetBrains Mono', monospace;
+      --glow: 0 0 40px rgba(255,69,0,0.35); --glow-sm: 0 0 16px rgba(255,69,0,0.25);
+      --radius: 4px; --nav-h: 64px;
+    }
+    html { scroll-behavior: smooth; }
+    body { background: var(--bg); color: var(--text); font-family: var(--body); font-size: 16px; line-height: 1.6; overflow-x: hidden; }
+    body::before { content: ''; position: fixed; inset: 0; background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='1'/%3E%3C/svg%3E"); opacity: 0.03; pointer-events: none; z-index: 9999; }
+    ::-webkit-scrollbar { width: 4px; } ::-webkit-scrollbar-track { background: var(--bg); } ::-webkit-scrollbar-thumb { background: var(--accent); border-radius: 2px; }
+
+    /* NAV */
+    #nav { position: fixed; top: 0; left: 0; right: 0; height: var(--nav-h); z-index: 200; display: flex; align-items: center; justify-content: space-between; padding: 0 clamp(1.5rem,5vw,4rem); background: linear-gradient(to bottom, rgba(13,13,15,0.95), rgba(13,13,15,0)); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); transition: background 0.3s; }
+    #nav.scrolled { background: rgba(13,13,15,0.97); }
+    .nav-logo { font-family: var(--display); font-size: 1.6rem; letter-spacing: 0.08em; color: var(--text); text-decoration: none; }
+    .nav-logo span { color: var(--accent); }
+    .nav-links { display: flex; gap: 2rem; list-style: none; }
+    .nav-links a { font-family: var(--mono); font-size: 0.7rem; letter-spacing: 0.15em; text-transform: uppercase; color: var(--muted); text-decoration: none; transition: color 0.2s; }
+    .nav-links a:hover { color: var(--accent); } .nav-links a.active { color: var(--accent); }
+    .nav-burger { display: none; flex-direction: column; gap: 5px; background: none; border: none; cursor: pointer; padding: 4px; }
+    .nav-burger span { display: block; width: 22px; height: 1.5px; background: var(--text); transition: transform 0.25s, opacity 0.25s; }
+    .nav-burger.open span:nth-child(1) { transform: translateY(6.5px) rotate(45deg); }
+    .nav-burger.open span:nth-child(2) { opacity: 0; }
+    .nav-burger.open span:nth-child(3) { transform: translateY(-6.5px) rotate(-45deg); }
+    .nav-drawer { display: none; position: fixed; top: var(--nav-h); left: 0; right: 0; background: rgba(13,13,15,0.98); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); padding: 2rem clamp(1.5rem,5vw,4rem); border-bottom: 1px solid var(--border); z-index: 190; flex-direction: column; gap: 1.5rem; }
+    .nav-drawer a { font-family: var(--mono); font-size: 0.8rem; letter-spacing: 0.15em; text-transform: uppercase; color: var(--muted); text-decoration: none; }
+    .nav-drawer a:hover { color: var(--accent); }
+
+    /* PAGE HERO */
+    .page-hero {
+      position: relative; overflow: hidden;
+      padding: calc(var(--nav-h) + 5rem) clamp(1.5rem,5vw,4rem) 4rem;
+      min-height: 52vh; display: flex; align-items: flex-end;
+    }
+    .page-hero-bg { position: absolute; inset: 0; background-size: cover; background-position: center; filter: brightness(0.2) saturate(0.6); }
+    .page-hero-bg::after { content: ''; position: absolute; inset: 0; background: linear-gradient(to top, var(--bg) 0%, rgba(13,13,15,0.5) 60%, rgba(13,13,15,0.1) 100%); }
+    .page-hero-content { position: relative; z-index: 1; max-width: 700px; }
+    .page-hero-eyebrow { font-family: var(--mono); font-size: 0.72rem; letter-spacing: 0.2em; color: var(--accent); text-transform: uppercase; margin-bottom: 0.75rem; display: flex; align-items: center; gap: 0.75rem; }
+    .page-hero-eyebrow::before { content: ''; display: block; width: 2rem; height: 1px; background: var(--accent); flex-shrink: 0; }
+    .page-hero h1 { font-family: var(--display); font-size: clamp(3.5rem, 9vw, 7rem); line-height: 0.95; letter-spacing: 0.02em; color: var(--text); text-shadow: var(--glow); margin-bottom: 0.4em; }
+    .page-hero-sub { font-size: 1rem; color: var(--muted); max-width: 480px; line-height: 1.7; margin-bottom: 1.5rem; }
+    .status-pill { display: inline-flex; align-items: center; gap: 0.5rem; font-family: var(--mono); font-size: 0.62rem; letter-spacing: 0.15em; text-transform: uppercase; padding: 0.35rem 0.9rem; border-radius: 100px; width: fit-content; }
+    .status-pill.open { background: rgba(62,207,142,0.12); border: 1px solid rgba(62,207,142,0.35); color: #3ecf8e; }
+    .status-pill.closed { background: rgba(239,68,68,0.12); border: 1px solid rgba(239,68,68,0.35); color: #ef4444; }
+    .status-pill-dot { width: 6px; height: 6px; border-radius: 50%; background: currentColor; animation: pulse-dot 2s infinite; }
+    @keyframes pulse-dot { 0%,100% { opacity: 1; } 50% { opacity: 0.3; } }
+
+    /* MAIN CONTENT */
+    .section { padding: clamp(3.5rem,8vh,6rem) clamp(1.5rem,5vw,4rem); }
+    .section-inner { max-width: 1100px; margin: 0 auto; }
+    .divider { border: none; border-top: 1px solid var(--border); }
+
+    .section-label { font-family: var(--mono); font-size: 0.65rem; letter-spacing: 0.2em; color: var(--accent); text-transform: uppercase; margin-bottom: 0.75rem; display: flex; align-items: center; gap: 0.75rem; }
+    .section-label::before { content: ''; display: block; width: 2rem; height: 1px; background: var(--accent); flex-shrink: 0; }
+    .section-heading { font-family: var(--display); font-size: clamp(2rem,5vw,3.5rem); line-height: 1; letter-spacing: 0.02em; margin-bottom: 0.25em; }
+
+    /* BUTTONS */
+    .btn { display: inline-flex; align-items: center; gap: 0.5rem; padding: 0.65rem 1.5rem; font-family: var(--mono); font-size: 0.7rem; letter-spacing: 0.15em; text-transform: uppercase; text-decoration: none; border-radius: var(--radius); transition: all 0.2s; cursor: pointer; border: none; }
+    .btn-primary { background: var(--accent); color: #fff; box-shadow: var(--glow-sm); }
+    .btn-primary:hover { background: #ff5a1f; box-shadow: var(--glow); transform: translateY(-2px); }
+    .btn-outline { background: transparent; color: var(--text); border: 1px solid var(--border); }
+    .btn-outline:hover { border-color: var(--accent); color: var(--accent); transform: translateY(-2px); }
+
+    /* COMM GRID */
+    .comm-main-grid { display: grid; grid-template-columns: 1.1fr 0.9fr; gap: 5rem; align-items: start; }
+
+    /* PRICING */
+    .block-label { font-family: var(--display); font-size: 1.5rem; letter-spacing: 0.04em; margin-bottom: 1rem; color: var(--text); }
+    .pricing-table { display: flex; flex-direction: column; gap: 0.5rem; margin-bottom: 2.5rem; }
+    .pricing-row { display: flex; align-items: center; justify-content: space-between; padding: 0.9rem 1.2rem; background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); transition: border-color 0.2s; }
+    .pricing-row:hover { border-color: rgba(255,69,0,0.3); }
+    .pricing-name { font-size: 0.9rem; color: var(--text); }
+    .pricing-note { font-size: 0.72rem; color: var(--muted); margin-top: 0.15rem; }
+    .pricing-price { font-family: var(--display); font-size: 1.6rem; color: var(--accent); letter-spacing: 0.04em; flex-shrink: 0; margin-left: 1rem; }
+
+    /* TOS */
+    .tos-list { list-style: none; display: flex; flex-direction: column; gap: 0.6rem; margin-bottom: 2.5rem; }
+    .tos-item { display: flex; gap: 0.75rem; font-size: 0.85rem; color: var(--muted); line-height: 1.6; }
+    .tos-item::before { content: '—'; color: var(--accent); flex-shrink: 0; margin-top: 0.05rem; }
+
+    /* CONTACT */
+    .contact-handles { display: flex; gap: 0.75rem; flex-wrap: wrap; }
+    .handle { display: inline-flex; align-items: center; gap: 0.5rem; font-family: var(--mono); font-size: 0.7rem; padding: 0.5rem 0.9rem; background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); color: var(--muted); }
+    .handle svg { width: 12px; height: 12px; fill: currentColor; flex-shrink: 0; }
+    .handle span { color: var(--text); }
+
+    /* STEPS */
+    .steps { display: flex; flex-direction: column; margin-bottom: 2.5rem; }
+    .step { display: flex; gap: 1.25rem; padding-bottom: 1.75rem; position: relative; }
+    .step:not(:last-child) .step-line { position: absolute; left: 1.1rem; top: 2.4rem; bottom: 0; width: 1px; background: linear-gradient(to bottom, rgba(255,69,0,0.5), transparent); }
+    .step-num { flex-shrink: 0; width: 2.2rem; height: 2.2rem; border: 1px solid var(--accent); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-family: var(--mono); font-size: 0.6rem; color: var(--accent); }
+    .step-text { font-size: 0.9rem; color: var(--muted); line-height: 1.7; padding-top: 0.4rem; }
+    .step-text strong { color: var(--text); }
+
+    /* STICKY CTA SIDEBAR */
+    .comm-sidebar { position: sticky; top: calc(var(--nav-h) + 2rem); }
+    .cta-card { background: var(--surface); border: 1px solid var(--border); border-radius: 6px; overflow: hidden; }
+    .cta-card-img { width: 100%; height: 180px; object-fit: cover; display: block; opacity: 0.6; }
+    .cta-card-body { padding: 1.5rem; display: flex; flex-direction: column; gap: 1rem; }
+    .cta-card-title { font-family: var(--display); font-size: 1.6rem; letter-spacing: 0.04em; }
+    .cta-card-desc { font-size: 0.85rem; color: var(--muted); line-height: 1.7; }
+
+    /* FOOTER */
+    footer { padding: 2rem clamp(1.5rem,5vw,4rem); border-top: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 1rem; }
+    .footer-copy { font-family: var(--mono); font-size: 0.65rem; letter-spacing: 0.1em; color: var(--muted); text-transform: uppercase; }
+    .footer-credit a { font-family: var(--mono); font-size: 0.65rem; letter-spacing: 0.1em; color: var(--muted); text-decoration: none; text-transform: uppercase; transition: color 0.2s; }
+    .footer-credit a:hover { color: var(--accent); }
+
+    /* FADE */
+    .fade-up { opacity: 0; transform: translateY(24px); transition: opacity 0.65s, transform 0.65s; }
+    .fade-up.visible { opacity: 1; transform: none; }
+
+    @media (max-width: 860px) {
+      .comm-main-grid { grid-template-columns: 1fr; gap: 3rem; }
+      .comm-sidebar { position: static; }
+    }
+    @media (max-width: 640px) { .nav-links { display: none; } .nav-burger { display: flex; } }
+    @media (prefers-reduced-motion: reduce) { .fade-up { transition: none; opacity: 1; transform: none; } }
+  </style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav id="nav">
+  <a class="nav-logo" href="index.html" id="nav-logo">FLAME<span>488</span></a>
+  <ul class="nav-links" id="nav-links"></ul>
+  <button class="nav-burger" id="nav-burger" aria-label="Open menu"><span></span><span></span><span></span></button>
+</nav>
+<div class="nav-drawer" id="nav-drawer"></div>
+
+<!-- PAGE HERO -->
+<div class="page-hero">
+  <div class="page-hero-bg" id="page-hero-bg"></div>
+  <div class="page-hero-content">
+    <p class="page-hero-eyebrow">Work with Me</p>
+    <h1>Commissions</h1>
+    <p class="page-hero-sub" id="page-hero-intro"></p>
+    <div id="page-status-pill"></div>
+  </div>
+</div>
+
+<!-- MAIN -->
+<section class="section">
+  <div class="section-inner">
+    <div class="comm-main-grid">
+
+      <!-- LEFT: pricing + tos + contact -->
+      <div>
+        <div class="fade-up">
+          <p class="section-label">Services</p>
+          <h2 class="section-heading" style="margin-bottom:1.5rem;">Pricing</h2>
+          <div class="pricing-table" id="pricing-table"></div>
+        </div>
+
+        <hr class="divider" style="margin:2.5rem 0;" />
+
+        <div class="fade-up">
+          <p class="section-label">Process</p>
+          <h2 class="section-heading" style="margin-bottom:1.5rem;">How It Works</h2>
+          <div class="steps" id="steps"></div>
+        </div>
+
+        <hr class="divider" style="margin:2.5rem 0;" />
+
+        <div class="fade-up">
+          <p class="section-label">Rules</p>
+          <h2 class="section-heading" style="margin-bottom:1.5rem;">Terms of Service</h2>
+          <ul class="tos-list" id="tos-list"></ul>
+        </div>
+      </div>
+
+      <!-- RIGHT: sticky CTA card -->
+      <div class="comm-sidebar fade-up">
+        <div class="cta-card">
+          <img class="cta-card-img" id="cta-img" src="" alt="Commissions" />
+          <div class="cta-card-body">
+            <div id="cta-status-pill"></div>
+            <p class="cta-card-title" id="cta-heading"></p>
+            <p class="cta-card-desc" id="cta-note"></p>
+            <h4 style="font-family:var(--mono);font-size:0.65rem;letter-spacing:0.15em;text-transform:uppercase;color:var(--muted);margin-bottom:0.5rem;">Contact via</h4>
+            <div class="contact-handles" id="contact-handles"></div>
+            <a id="cta-discord-btn" href="#" target="_blank" rel="noopener" class="btn btn-primary" style="margin-top:0.25rem;width:100%;justify-content:center;">DM on Discord</a>
+            <a id="cta-ig-btn"      href="#" target="_blank" rel="noopener" class="btn btn-outline" style="width:100%;justify-content:center;">DM on Instagram</a>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<footer>
+  <p class="footer-copy" id="footer-copy"></p>
+  <p class="footer-credit" id="footer-credit"></p>
+</footer>
+
+<script src="content.js"></script>
+<script>
+(function () {
+  const C = PORTFOLIO_CONTENT;
+  const el  = id => document.getElementById(id);
+  const set = (id, html) => { const e = el(id); if (e) e.innerHTML = html; };
+  function md(s) { return s.replace(/\*\*(.*?)\*\*/g,'<strong>$1</strong>').replace(/\n/g,'<br/>'); }
+
+  const icons = {
+    discord:   `<svg viewBox="0 0 24 24"><path d="M20.3 4.4A19.6 19.6 0 0 0 15.2 3a.1.1 0 0 0-.1 0 13.5 13.5 0 0 0-.6 1.3 18.1 18.1 0 0 0-5.1 0A13 13 0 0 0 8.8 3a.1.1 0 0 0-.1 0 19.5 19.5 0 0 0-5.1 1.4A20.8 20.8 0 0 0 .1 18a19.9 19.9 0 0 0 6 3 .1.1 0 0 0 .1-.1 14 14 0 0 0 1.2-2 .1.1 0 0 0-.1-.1 13 13 0 0 1-1.9-.9.1.1 0 0 1 0-.1l.4-.3a.1.1 0 0 1 .1 0 14.2 14.2 0 0 0 12.1 0 .1.1 0 0 1 .1 0l.4.3a.1.1 0 0 1 0 .1 12.8 12.8 0 0 1-1.9.9.1.1 0 0 0-.1.1 15.6 15.6 0 0 0 1.2 2 .1.1 0 0 0 .1.1 19.8 19.8 0 0 0 6-3A20.7 20.7 0 0 0 20.3 4.4zM8 15.4c-1.1 0-2-.9-2-2.1s.9-2 2-2c1.2 0 2.1 1 2 2.1 0 1.2-.9 2.1-2 2.1zm7.4 0c-1.1 0-2-.9-2-2.1s.9-2 2-2c1.2 0 2.1 1 2 2.1 0 1.2-.8 2.1-2 2.1z"/></svg>`,
+    instagram: `<svg viewBox="0 0 24 24"><path d="M12 2.2c3.2 0 3.6 0 4.9.1 3.3.2 4.8 1.7 5 5 .1 1.3.1 1.6.1 4.8s0 3.6-.1 4.8c-.2 3.3-1.7 4.8-5 5-1.3.1-1.6.1-4.9.1s-3.6 0-4.8-.1c-3.3-.2-4.8-1.7-5-5C2 16.6 2 16.3 2 12s0-3.6.1-4.8C2.3 3.9 3.8 2.4 7.2 2.3 8.4 2.2 8.8 2.2 12 2.2zm0-2.2C8.7 0 8.3 0 7.1.1 2.7.3.3 2.7.1 7.1 0 8.3 0 8.7 0 12s0 3.7.1 4.9C.3 21.3 2.7 23.7 7.1 23.9c1.2.1 1.6.1 4.9.1s3.7 0 4.9-.1c4.4-.2 6.8-2.6 7-7 .1-1.2.1-1.6.1-4.9s0-3.7-.1-4.9C23.7 2.7 21.3.3 16.9.1 15.7 0 15.3 0 12 0zm0 5.8a6.2 6.2 0 1 0 0 12.4A6.2 6.2 0 0 0 12 5.8zm0 10.2a4 4 0 1 1 0-8 4 4 0 0 1 0 8zm6.4-11.8a1.44 1.44 0 1 0 0 2.88 1.44 1.44 0 0 0 0-2.88z"/></svg>`,
+  };
+
+  // NAV
+  document.title = `Commissions — ${C.meta.siteTitle}`;
+  el('nav-logo').innerHTML = C.hero.name.replace(/(\d+)$/, '<span>$1</span>');
+  const navLinks = [
+    { label: 'Gallery',     href: 'gallery.html'     },
+    { label: 'Commissions', href: 'commissions.html', active: true },
+    { label: 'Character',   href: 'oc.html'          },
+  ];
+  el('nav-links').innerHTML = navLinks.map(l => `<li><a href="${l.href}"${l.active?' class="active"':''}>${l.label}</a></li>`).join('');
+  el('nav-drawer').innerHTML = navLinks.map(l => `<a href="${l.href}">${l.label}</a>`).join('');
+  const burger = el('nav-burger'), drawer = el('nav-drawer');
+  burger.addEventListener('click', () => { const o = burger.classList.toggle('open'); drawer.style.display = o ? 'flex' : 'none'; });
+  drawer.querySelectorAll('a').forEach(a => a.addEventListener('click', () => { burger.classList.remove('open'); drawer.style.display = 'none'; }));
+  window.addEventListener('scroll', () => el('nav').classList.toggle('scrolled', window.scrollY > 60), { passive: true });
+
+  // PAGE HERO
+  el('page-hero-bg').style.backgroundImage = `url('${C.commissions.image}')`;
+  set('page-hero-intro', C.commissions.intro);
+  const open = C.commissions.statusOpen;
+  const pillHTML = `<div class="status-pill ${open?'open':'closed'}"><span class="status-pill-dot"></span>${open?'Open for Commissions':'Currently Closed'}</div>`;
+  set('page-status-pill', pillHTML);
+  set('cta-status-pill', pillHTML);
+
+  // PRICING
+  el('pricing-table').innerHTML = C.commissions.services.map(s => `
+    <div class="pricing-row">
+      <div><div class="pricing-name">${s.name}</div>${s.note?`<div class="pricing-note">${s.note}</div>`:''}</div>
+      <div class="pricing-price">${s.price}</div>
+    </div>`).join('');
+
+  // STEPS
+  el('steps').innerHTML = C.commissions.process.map((step, i) => `
+    <div class="step">
+      <div class="step-line"></div>
+      <div class="step-num">${String(i+1).padStart(2,'0')}</div>
+      <p class="step-text">${md(step)}</p>
+    </div>`).join('');
+
+  // TOS
+  el('tos-list').innerHTML = C.commissions.tos.map(t => `<li class="tos-item">${t}</li>`).join('');
+
+  // CTA CARD
+  el('cta-img').src = C.commissions.image;
+  set('cta-heading', C.commissions.heading);
+  set('cta-note', C.commissions.statusNote);
+  const { discord, instagram } = C.commissions.contact;
+  el('contact-handles').innerHTML = `
+    <div class="handle">${icons.discord} Discord: <span>${discord}</span></div>
+    <div class="handle">${icons.instagram} Instagram: <span>${instagram}</span></div>`;
+  el('cta-discord-btn').href = `https://discord.com/users/${discord}`;
+  el('cta-ig-btn').href = `https://instagram.com/${instagram}`;
+
+  // FOOTER
+  set('footer-copy', `© ${C.footer.year} ${C.meta.siteTitle}`);
+  set('footer-credit', `<a href="${C.footer.creditUrl}" target="_blank" rel="noopener">${C.footer.credit}</a>`);
+
+  // FADE
+  const obs = new IntersectionObserver(entries => { entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('visible'); obs.unobserve(e.target); } }); }, { threshold: 0.08 });
+  document.querySelectorAll('.fade-up').forEach(e => obs.observe(e));
+})();
+</script>
+
+  <!-- ── Vector Flame Cursor ── -->
+  <script>
+// ── VECTOR FLAME CURSOR ENGINE ─────────────────────────────────
+    (function () {
+      // Skip flame cursor on touch-primary devices (mobile/tablet)
+      if (!window.matchMedia('(hover: hover) and (pointer: fine)').matches) return;
+      if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+
+      const canvas = document.createElement('canvas');
+      canvas.id = 'flame-cursor-canvas';
+      canvas.style.cssText = 'position:fixed;inset:0;pointer-events:none;z-index:9998;';
+      document.body.appendChild(canvas);
+
+      const ctx = canvas.getContext('2d');
+      let width  = canvas.width  = window.innerWidth;
+      let height = canvas.height = window.innerHeight;
+
+      const particles    = [];
+      const embers       = [];
+      const shockwaves   = [];
+      const trailHistory = [];
+
+      const mouse = {
+        x: width / 2, y: height / 2,
+        prevX: width / 2, prevY: height / 2,
+        speed: 0,
+        lastMoveTime: performance.now()
+      };
+
+      const SPEED_FAST = 20;
+      function speedT(speed) { return Math.min(speed / SPEED_FAST, 1); }
+
+      // Palette
+      const COLOR_OUTER = '#FF0055'; 
+      const COLOR_MID   = '#FF6D00'; 
+      const COLOR_INNER = '#FFD600'; 
+      const COLOR_CORE  = '#FFFFFF'; 
+
+      // Helper: Draw a sharp 2D vector flame droplet shape
+      function drawVectorFlameShape(ctx, width, height) {
+        ctx.beginPath();
+        ctx.moveTo(0, -height);
+        ctx.bezierCurveTo(width * 0.8, -height * 0.3, width, height * 0.5, 0, height);
+        ctx.bezierCurveTo(-width, height * 0.5, -width * 0.8, -height * 0.3, 0, -height);
+        ctx.closePath();
+        ctx.fill();
+      }
+
+      // ── Vector Flame Particle ──
+      class FlameParticle {
+        constructor(x, y, speed, isIdle = false, isBurst = false) { this.reset(x, y, speed, isIdle, isBurst); }
+        reset(x, y, speed, isIdle, isBurst) {
+          this.isIdle = isIdle;
+          this.isBurst = isBurst;
+          const t = speedT(speed);
+
+          if (isIdle) {
+            this.x = x + (Math.random() - 0.5) * 8;
+            this.y = y + Math.random() * 4;
+            this.vx = (Math.random() - 0.5) * 0.4;
+            this.vy = -(Math.random() * 0.8 + 0.6);
+            this.w = Math.random() * 5 + 3;
+            this.h = this.w * (Math.random() * 0.6 + 1.2);
+            this.shrinkRate = 0.93;
+          } else if (isBurst) {
+            // High distance blast trajectory for click explosions
+            this.x = x;
+            this.y = y;
+            const angle = Math.random() * Math.PI * 2;
+            const force = Math.random() * 12 + 6; // Travel further distance
+            this.vx = Math.cos(angle) * force;
+            this.vy = Math.sin(angle) * force;
+            this.w = Math.random() * 10 + 8;
+            this.h = this.w * (Math.random() * 0.8 + 1.4);
+            this.shrinkRate = Math.random() * 0.04 + 0.93; // Smooth size reduction to zero
+          } else {
+            this.x = x + (Math.random() - 0.5) * 6;
+            this.y = y + (Math.random() - 0.5) * 6;
+            const spread = 0.3 + t * 0.7;
+            const upDrift = 1.0 + t * 1.5;
+            this.vx = (Math.random() - 0.5) * spread * 2;
+            this.vy = -upDrift;
+            this.w = Math.random() * (6 + t * 8) + 4;
+            this.h = this.w * (Math.random() * 0.8 + 1.4);
+            this.shrinkRate = 0.92;
+          }
+
+          this.initialW = this.w;
+          this.angle = Math.atan2(this.vy, this.vx) + Math.PI / 2 + (Math.random() - 0.5) * 0.3;
+          this.rotSpeed = (Math.random() - 0.5) * 0.12;
+        }
+
+        update() {
+          this.x += this.vx; 
+          this.y += this.vy;
+          
+          if (this.isIdle) {
+            this.vx += (Math.random() - 0.5) * 0.05;
+          } else if (this.isBurst) {
+            this.vx *= 0.94; // Air friction for travel distance momentum
+            this.vy *= 0.94;
+          }
+
+          this.w *= this.shrinkRate;
+          this.h *= this.shrinkRate;
+          this.angle += this.rotSpeed;
+        }
+
+        draw() {
+          if (this.w < 0.2) return;
+          const progress = 1 - (this.w / this.initialW); 
+
+          ctx.save();
+          ctx.globalCompositeOperation = 'source-over';
+          ctx.translate(this.x, this.y);
+          ctx.rotate(this.angle);
+
+          const outerColor = progress > 0.4 ? COLOR_OUTER : COLOR_MID;
+          ctx.fillStyle = outerColor;
+          ctx.shadowColor = outerColor;
+          ctx.shadowBlur = 10;
+
+          drawVectorFlameShape(ctx, this.w, this.h);
+
+          if (progress < 0.75 && this.w > 2) {
+            ctx.fillStyle = COLOR_INNER;
+            ctx.shadowColor = COLOR_INNER;
+            ctx.shadowBlur = 6;
+            drawVectorFlameShape(ctx, this.w * 0.6, this.h * 0.65);
+          }
+
+          if (progress < 0.35 && this.w > 3) {
+            ctx.fillStyle = COLOR_CORE;
+            ctx.shadowColor = COLOR_CORE;
+            ctx.shadowBlur = 4;
+            drawVectorFlameShape(ctx, this.w * 0.3, this.h * 0.35);
+          }
+
+          ctx.restore();
+        }
+
+        // Particle dies strictly when size shrinks to zero
+        get dead() { return this.w < 0.2; }
+      }
+
+      // ── Angular Vector Shard / Spark ──
+      class EmberParticle {
+        constructor(x, y, speed, isIdle = false, isBurst = false) {
+          this.x = x; this.y = y;
+          const t = speedT(speed);
+          
+          if (isIdle) {
+            this.vx = (Math.random() - 0.5) * 1.2;
+            this.vy = -(Math.random() * 1.5 + 1.0);
+            this.size = Math.random() * 2 + 2;
+            this.shrinkRate = 0.94;
+          } else if (isBurst) {
+            const angle = Math.random() * Math.PI * 2;
+            const force = Math.random() * 14 + 8; // High speed outward burst
+            this.vx = Math.cos(angle) * force;
+            this.vy = Math.sin(angle) * force;
+            this.size = Math.random() * 6 + 4;
+            this.shrinkRate = Math.random() * 0.03 + 0.92;
+          } else {
+            const angle = Math.random() * Math.PI * 2;
+            const force = Math.random() * (4 + t * 6) + 2;
+            this.vx = Math.cos(angle) * force;
+            this.vy = Math.sin(angle) * force - 1;
+            this.size = Math.random() * (4 + t * 3) + 3;
+            this.shrinkRate = 0.93;
+          }
+
+          const colors = [COLOR_INNER, COLOR_MID, COLOR_OUTER, COLOR_CORE];
+          this.color = colors[Math.floor(Math.random() * colors.length)];
+          this.rotation = Math.random() * Math.PI * 2;
+          this.rotSpeed = (Math.random() - 0.5) * 0.4;
+        }
+
+        update() {
+          this.x += this.vx; this.y += this.vy;
+          this.vx *= 0.94; this.vy *= 0.94;
+          this.size *= this.shrinkRate; // Shrink until zero
+          this.rotation += this.rotSpeed;
+        }
+
+        draw() {
+          if (this.size < 0.2) return;
+          ctx.save();
+          ctx.globalCompositeOperation = 'source-over';
+          ctx.translate(this.x, this.y);
+          ctx.rotate(this.rotation);
+          
+          ctx.fillStyle = this.color;
+          ctx.shadowColor = this.color;
+          ctx.shadowBlur = 6;
+
+          ctx.beginPath();
+          ctx.moveTo(0, -this.size * 1.2);
+          ctx.lineTo(this.size * 0.6, this.size * 0.8);
+          ctx.lineTo(-this.size * 0.8, this.size * 0.4);
+          ctx.closePath();
+          ctx.fill();
+
+          ctx.restore();
+        }
+
+        // Ember dies when size collapses to zero
+        get dead() { return this.size < 0.2; }
+      }
+
+      // ── Polygon Shockwave with Random Rotation ──
+      class Shockwave {
+        constructor(x, y) {
+          this.x = x; this.y = y;
+          this.radius = 6;
+          this.maxRadius = 80;
+          this.life = 1;
+          this.sides = 6; // Hexagon
+          this.rotationAngle = Math.random() * Math.PI * 2; // Random rotation every click
+        }
+
+        update() {
+          this.radius += (this.maxRadius - this.radius) * 0.22;
+          this.life -= 0.07;
+        }
+
+        draw() {
+          if (this.life <= 0) return;
+          ctx.save();
+          ctx.globalCompositeOperation = 'source-over';
+          ctx.lineWidth = Math.max(2, 6 * this.life);
+          ctx.strokeStyle = COLOR_INNER;
+          ctx.shadowColor = COLOR_INNER;
+          ctx.shadowBlur = 12;
+          
+          ctx.beginPath();
+          for (let i = 0; i < this.sides; i++) {
+            const a = (i / this.sides) * Math.PI * 2 + this.rotationAngle;
+            const px = this.x + Math.cos(a) * this.radius;
+            const py = this.y + Math.sin(a) * this.radius;
+            if (i === 0) ctx.moveTo(px, py);
+            else ctx.lineTo(px, py);
+          }
+          ctx.closePath();
+          ctx.stroke();
+          ctx.restore();
+        }
+
+        get dead() { return this.life <= 0; }
+      }
+
+      // ── Layered Solid Vector Ribbon Trail ──
+      function drawSlashRibbon() {
+        if (trailHistory.length < 3) return;
+        
+        const passes = [
+          { color: COLOR_MID, widthFactor: 1.0, glow: 10 },
+          { color: COLOR_INNER, widthFactor: 0.5, glow: 6 },
+          { color: COLOR_CORE, widthFactor: 0.2, glow: 3 }
+        ];
+
+        passes.forEach(pass => {
+          ctx.save();
+          ctx.globalCompositeOperation = 'source-over';
+          ctx.strokeStyle = pass.color;
+          ctx.shadowColor = pass.color;
+          ctx.shadowBlur = pass.glow;
+          ctx.lineCap = 'round';
+          ctx.lineJoin = 'round';
+
+          for (let i = 1; i < trailHistory.length - 1; i++) {
+            const xc = (trailHistory[i].x + trailHistory[i + 1].x) / 2;
+            const yc = (trailHistory[i].y + trailHistory[i + 1].y) / 2;
+            const frac = i / trailHistory.length;
+            
+            ctx.beginPath();
+            ctx.moveTo(trailHistory[i - 1].x, trailHistory[i - 1].y);
+            ctx.quadraticCurveTo(trailHistory[i].x, trailHistory[i].y, xc, yc);
+            ctx.lineWidth = frac * 14 * pass.widthFactor;
+            ctx.stroke();
+          }
+          ctx.restore();
+        });
+      }
+
+      // ── Glowing Cursor Reticle ──
+      function drawCursorCore() {
+        ctx.save();
+        ctx.globalCompositeOperation = 'source-over';
+        
+        ctx.shadowColor = COLOR_MID;
+        ctx.shadowBlur = 12;
+
+        ctx.fillStyle = COLOR_MID;
+        ctx.beginPath();
+        ctx.arc(mouse.x, mouse.y, 9, 0, Math.PI * 2);
+        ctx.fill();
+
+        ctx.fillStyle = COLOR_INNER;
+        ctx.beginPath();
+        ctx.arc(mouse.x, mouse.y, 6, 0, Math.PI * 2);
+        ctx.fill();
+
+        ctx.fillStyle = COLOR_CORE;
+        ctx.beginPath();
+        ctx.arc(mouse.x, mouse.y, 3, 0, Math.PI * 2);
+        ctx.fill();
+
+        ctx.restore();
+      }
+
+      // ── Input Handling ──
+      function updateMousePos(x, y) {
+        mouse.prevX = mouse.x; mouse.prevY = mouse.y;
+        mouse.x = x; mouse.y = y;
+        const dx = mouse.x - mouse.prevX, dy = mouse.y - mouse.prevY;
+        mouse.speed = Math.sqrt(dx * dx + dy * dy);
+        mouse.lastMoveTime = performance.now();
+
+        trailHistory.push({ x: mouse.x, y: mouse.y });
+        if (trailHistory.length > 8) trailHistory.shift();
+
+        const flameCount = Math.min(Math.floor(mouse.speed * 0.25) + 1, 4);
+        for (let i = 0; i < flameCount; i++) {
+          particles.push(new FlameParticle(mouse.x, mouse.y, mouse.speed));
+        }
+
+        if (mouse.speed > 5) {
+          const ec = Math.min(Math.floor(mouse.speed * 0.2), 3);
+          for (let i = 0; i < ec; i++) {
+            embers.push(new EmberParticle(mouse.x, mouse.y, mouse.speed));
+          }
+        }
+      }
+
+      window.addEventListener('mousemove', e => updateMousePos(e.clientX, e.clientY));
+      window.addEventListener('touchmove', e => {
+        if (e.touches.length > 0) updateMousePos(e.touches[0].clientX, e.touches[0].clientY);
+      }, { passive: true });
+
+      // Click Event: High distance burst + Randomly rotated hexagon ring
+      window.addEventListener('click', e => {
+        shockwaves.push(new Shockwave(e.clientX, e.clientY));
+        
+        for (let i = 0; i < 14; i++) {
+          particles.push(new FlameParticle(e.clientX, e.clientY, 0, false, true));
+        }
+        for (let i = 0; i < 16; i++) {
+          embers.push(new EmberParticle(e.clientX, e.clientY, 0, false, true));
+        }
+      });
+
+      window.addEventListener('resize', () => {
+        width  = canvas.width  = window.innerWidth;
+        height = canvas.height = window.innerHeight;
+      });
+
+      // ── Main Loop ──
+      function animate() {
+        ctx.clearRect(0, 0, width, height);
+
+        if (mouse.speed < 1) {
+          if (trailHistory.length > 0) {
+            trailHistory.shift(); 
+          }
+
+          for (let i = 0; i < particles.length; i++) {
+            if (!particles[i].isIdle && !particles[i].isBurst) {
+              const dx = particles[i].x - mouse.x;
+              const dy = particles[i].y - mouse.y;
+              const dist = Math.sqrt(dx * dx + dy * dy);
+              if (dist > 15) {
+                particles[i].w *= 0.85; // Faster decay for tail particles at rest
+              }
+            }
+          }
+
+          if (Math.random() < 0.4) {
+            particles.push(new FlameParticle(mouse.x, mouse.y, 0, true));
+          }
+          if (Math.random() < 0.15) {
+            embers.push(new EmberParticle(mouse.x, mouse.y, 0, true));
+          }
+        }
+
+        mouse.speed *= 0.88;
+
+        drawSlashRibbon();
+
+        for (let i = particles.length - 1; i >= 0; i--) {
+          particles[i].update(); particles[i].draw();
+          if (particles[i].dead) particles.splice(i, 1);
+        }
+        for (let i = embers.length - 1; i >= 0; i--) {
+          embers[i].update(); embers[i].draw();
+          if (embers[i].dead) embers.splice(i, 1);
+        }
+        for (let i = shockwaves.length - 1; i >= 0; i--) {
+          shockwaves[i].update(); shockwaves[i].draw();
+          if (shockwaves[i].dead) shockwaves.splice(i, 1);
+        }
+
+        drawCursorCore();
+        requestAnimationFrame(animate);
+      }
+      animate();
+    })();
+  </script>
+</body>
+</html>

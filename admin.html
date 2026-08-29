@@ -1,0 +1,1697 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Flame488 — Admin</title>
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:opsz,wght@9..40,400;9..40,500&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg:       #0D0D0F;
+      --surface:  #141418;
+      --surface2: #1C1C22;
+      --border:   rgba(255,255,255,0.08);
+      --accent:   #FF4500;
+      --accent2:  #C8873A;
+      --text:     #F0EDE8;
+      --muted:    rgba(240,237,232,0.5);
+      --display:  'Bebas Neue', sans-serif;
+      --body:     'DM Sans', sans-serif;
+      --mono:     'JetBrains Mono', monospace;
+      --glow-sm:  0 0 16px rgba(255,69,0,0.25);
+      --radius:   4px;
+      --green:    #3ecf8e;
+      --red:      #ef4444;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: var(--body);
+      font-size: 15px;
+      line-height: 1.6;
+      min-height: 100vh;
+    }
+
+    ::-webkit-scrollbar { width: 4px; }
+    ::-webkit-scrollbar-track { background: var(--bg); }
+    ::-webkit-scrollbar-thumb { background: var(--accent); border-radius: 2px; }
+
+    /* ── LAYOUT ── */
+    .admin-layout {
+      display: grid;
+      grid-template-columns: 220px 1fr;
+      min-height: 100vh;
+    }
+
+    /* ── SIDEBAR ── */
+    .sidebar {
+      background: var(--surface);
+      border-right: 1px solid var(--border);
+      position: sticky;
+      top: 0;
+      height: 100vh;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .sidebar-logo {
+      padding: 1.5rem;
+      border-bottom: 1px solid var(--border);
+    }
+    .sidebar-logo h1 {
+      font-family: var(--display);
+      font-size: 1.4rem;
+      letter-spacing: 0.08em;
+      color: var(--text);
+    }
+    .sidebar-logo h1 span { color: var(--accent); }
+    .sidebar-logo p {
+      font-family: var(--mono);
+      font-size: 0.6rem;
+      color: var(--muted);
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      margin-top: 0.2rem;
+    }
+
+    .sidebar-nav {
+      padding: 1rem 0;
+      flex: 1;
+    }
+
+    .nav-section-label {
+      font-family: var(--mono);
+      font-size: 0.55rem;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: rgba(240,237,232,0.3);
+      padding: 0.75rem 1.5rem 0.4rem;
+    }
+
+    .nav-item {
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+      padding: 0.6rem 1.5rem;
+      font-size: 0.82rem;
+      color: var(--muted);
+      cursor: pointer;
+      transition: color 0.15s, background 0.15s;
+      border-left: 2px solid transparent;
+      text-decoration: none;
+    }
+    .nav-item:hover { color: var(--text); background: rgba(255,255,255,0.03); }
+    .nav-item.active {
+      color: var(--accent);
+      border-left-color: var(--accent);
+      background: rgba(255,69,0,0.05);
+    }
+    .nav-item .dot {
+      width: 6px; height: 6px;
+      border-radius: 50%;
+      background: currentColor;
+      flex-shrink: 0;
+      opacity: 0.5;
+    }
+    .nav-item.active .dot { opacity: 1; box-shadow: 0 0 6px var(--accent); }
+
+    .sidebar-footer {
+      padding: 1rem 1.5rem;
+      border-top: 1px solid var(--border);
+    }
+
+    .btn-preview {
+      display: block;
+      text-align: center;
+      padding: 0.6rem 1rem;
+      background: transparent;
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      font-family: var(--mono);
+      font-size: 0.65rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--muted);
+      text-decoration: none;
+      transition: all 0.2s;
+      margin-bottom: 0.75rem;
+    }
+    .btn-preview:hover { color: var(--text); border-color: var(--accent); }
+
+    /* ── MAIN CONTENT ── */
+    .main {
+      padding: 2.5rem clamp(2rem, 5vw, 3.5rem);
+      max-width: 900px;
+    }
+
+    /* ── PAGE HEADER ── */
+    .page-header {
+      margin-bottom: 2.5rem;
+      padding-bottom: 2rem;
+      border-bottom: 1px solid var(--border);
+    }
+    .page-header h2 {
+      font-family: var(--display);
+      font-size: 2.5rem;
+      letter-spacing: 0.04em;
+      margin-bottom: 0.3rem;
+    }
+    .page-header p {
+      font-size: 0.85rem;
+      color: var(--muted);
+    }
+
+    /* ── SECTION PANELS ── */
+    .panel {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      margin-bottom: 1.5rem;
+      overflow: hidden;
+    }
+
+    .panel-header {
+      padding: 1.1rem 1.5rem;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      cursor: pointer;
+      user-select: none;
+      transition: background 0.15s;
+    }
+    .panel-header:hover { background: rgba(255,255,255,0.02); }
+
+    .panel-title {
+      font-family: var(--mono);
+      font-size: 0.72rem;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--text);
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+    }
+    .panel-title .pill {
+      background: rgba(255,69,0,0.12);
+      color: var(--accent);
+      border-radius: 3px;
+      padding: 0.15rem 0.5rem;
+      font-size: 0.55rem;
+    }
+
+    .panel-chevron {
+      color: var(--muted);
+      transition: transform 0.2s;
+      font-size: 0.8rem;
+    }
+    .panel.open .panel-chevron { transform: rotate(180deg); }
+
+    .panel-body {
+      padding: 1.5rem;
+      display: none;
+    }
+    .panel.open .panel-body { display: block; }
+
+    /* ── FORM FIELDS ── */
+    .field-group {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1rem;
+      margin-bottom: 1rem;
+    }
+    .field-group.full { grid-template-columns: 1fr; }
+
+    .field {
+      display: flex;
+      flex-direction: column;
+      gap: 0.4rem;
+    }
+
+    .field label {
+      font-family: var(--mono);
+      font-size: 0.62rem;
+      letter-spacing: 0.13em;
+      text-transform: uppercase;
+      color: var(--muted);
+    }
+    .field label .hint {
+      font-size: 0.58rem;
+      opacity: 0.6;
+      text-transform: none;
+      letter-spacing: 0;
+      margin-left: 0.4rem;
+    }
+
+    .field input,
+    .field textarea,
+    .field select {
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      color: var(--text);
+      font-family: var(--body);
+      font-size: 0.88rem;
+      padding: 0.6rem 0.85rem;
+      outline: none;
+      transition: border-color 0.2s;
+      width: 100%;
+    }
+    .field input:focus,
+    .field textarea:focus,
+    .field select:focus { border-color: rgba(255,69,0,0.5); }
+
+    .field textarea { resize: vertical; min-height: 80px; }
+    .field input[type="color"] { height: 38px; cursor: pointer; padding: 2px 6px; }
+
+    /* ── LIST EDITORS (services, process, tos, socials) ── */
+    .list-editor { display: flex; flex-direction: column; gap: 0.5rem; margin-bottom: 0.75rem; }
+
+    .list-row {
+      display: flex;
+      gap: 0.5rem;
+      align-items: center;
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 0.5rem 0.75rem;
+    }
+
+    .list-row input {
+      background: transparent;
+      border: none;
+      outline: none;
+      color: var(--text);
+      font-family: var(--body);
+      font-size: 0.85rem;
+      flex: 1;
+      min-width: 0;
+    }
+
+    .list-row input::placeholder { color: var(--muted); opacity: 0.5; }
+
+    .list-row .price-input {
+      width: 56px;
+      text-align: right;
+      font-family: var(--mono);
+      color: var(--accent);
+    }
+
+    .list-row .note-input { flex: 0.7; }
+
+    .btn-icon {
+      background: none;
+      border: none;
+      cursor: pointer;
+      color: var(--muted);
+      font-size: 1rem;
+      line-height: 1;
+      padding: 2px 4px;
+      border-radius: 3px;
+      transition: color 0.15s, background 0.15s;
+      flex-shrink: 0;
+    }
+    .btn-icon:hover { color: var(--red); background: rgba(239,68,68,0.1); }
+
+    .btn-drag {
+      background: none;
+      border: none;
+      cursor: grab;
+      color: var(--muted);
+      font-size: 0.9rem;
+      padding: 2px 4px;
+      flex-shrink: 0;
+    }
+
+    .btn-add {
+      background: transparent;
+      border: 1px dashed var(--border);
+      border-radius: var(--radius);
+      color: var(--muted);
+      font-family: var(--mono);
+      font-size: 0.65rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      padding: 0.5rem 1rem;
+      cursor: pointer;
+      transition: all 0.2s;
+      align-self: flex-start;
+    }
+    .btn-add:hover { color: var(--accent); border-color: rgba(255,69,0,0.4); }
+
+    /* ── ACTION BAR ── */
+    .action-bar {
+      position: sticky;
+      bottom: 0;
+      background: rgba(13,13,15,0.95);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      border-top: 1px solid var(--border);
+      padding: 1rem clamp(2rem, 5vw, 3.5rem);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+    }
+
+    .action-status {
+      font-family: var(--mono);
+      font-size: 0.68rem;
+      letter-spacing: 0.1em;
+      color: var(--muted);
+    }
+    .action-status.saved { color: var(--green); }
+    .action-status.error { color: var(--red); }
+
+    .action-buttons { display: flex; gap: 0.75rem; }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.6rem 1.4rem;
+      font-family: var(--mono);
+      font-size: 0.68rem;
+      letter-spacing: 0.13em;
+      text-transform: uppercase;
+      border-radius: var(--radius);
+      cursor: pointer;
+      border: none;
+      transition: all 0.2s;
+    }
+    .btn-primary {
+      background: var(--accent);
+      color: #fff;
+      box-shadow: var(--glow-sm);
+    }
+    .btn-primary:hover { background: #ff5a1f; transform: translateY(-1px); }
+
+    .btn-secondary {
+      background: var(--surface2);
+      color: var(--text);
+      border: 1px solid var(--border);
+    }
+    .btn-secondary:hover { border-color: var(--accent); color: var(--accent); }
+
+    /* ── CODE EXPORT ── */
+    .code-block {
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 1.25rem;
+      font-family: var(--mono);
+      font-size: 0.75rem;
+      color: rgba(240,237,232,0.7);
+      white-space: pre;
+      overflow-x: auto;
+      max-height: 400px;
+      overflow-y: auto;
+      line-height: 1.6;
+    }
+
+    .export-actions {
+      display: flex;
+      gap: 0.75rem;
+      margin-top: 1rem;
+      flex-wrap: wrap;
+    }
+
+    /* ── TOAST ── */
+    #toast {
+      position: fixed;
+      bottom: 5rem;
+      right: 2rem;
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 0.75rem 1.25rem;
+      font-family: var(--mono);
+      font-size: 0.7rem;
+      letter-spacing: 0.1em;
+      color: var(--text);
+      z-index: 999;
+      transform: translateY(20px);
+      opacity: 0;
+      transition: all 0.25s;
+      pointer-events: none;
+    }
+    #toast.show { transform: none; opacity: 1; }
+    #toast.success { border-color: rgba(62,207,142,0.4); color: var(--green); }
+    #toast.error   { border-color: rgba(239,68,68,0.4); color: var(--red); }
+
+    /* ── GALLERY EDITOR ── */
+    .gallery-editor { display: flex; flex-direction: column; gap: 0.75rem; }
+
+    .gallery-item-card {
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      overflow: hidden;
+    }
+
+    .gallery-item-header {
+      display: flex; align-items: center; gap: 0.75rem;
+      padding: 0.6rem 0.75rem;
+      cursor: pointer;
+      transition: background 0.15s;
+    }
+    .gallery-item-header:hover { background: rgba(255,255,255,0.03); }
+
+    .gallery-item-thumb {
+      width: 52px; height: 36px;
+      object-fit: cover;
+      border-radius: 3px;
+      background: var(--smoke);
+      flex-shrink: 0;
+    }
+
+    .gallery-item-title-display {
+      flex: 1; min-width: 0;
+      font-size: 0.82rem; color: var(--text);
+      white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+    }
+
+    .gallery-item-cat-tag {
+      font-family: var(--mono); font-size: 0.58rem;
+      letter-spacing: 0.1em; text-transform: uppercase;
+      padding: 0.15rem 0.5rem;
+      border-radius: 3px;
+      border: 1px solid var(--border);
+      color: var(--muted);
+      flex-shrink: 0;
+    }
+    .gallery-item-cat-tag.mywork { border-color: rgba(200,135,58,0.4); color: var(--accent2); }
+    .gallery-item-cat-tag.spoiler { border-color: rgba(255,69,0,0.4); color: var(--accent); }
+
+    .gallery-item-body {
+      display: none;
+      padding: 0.75rem;
+      border-top: 1px solid var(--border);
+    }
+    .gallery-item-card.open .gallery-item-body { display: block; }
+
+    .gallery-item-fields {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0.75rem;
+      margin-bottom: 0.75rem;
+    }
+
+    .gallery-item-fields .field-full { grid-column: 1 / -1; }
+
+    .gallery-item-actions {
+      display: flex; justify-content: flex-end; gap: 0.5rem;
+    }
+
+    .btn-danger {
+      background: transparent; border: 1px solid rgba(239,68,68,0.3);
+      color: var(--red); font-family: var(--mono); font-size: 0.65rem;
+      letter-spacing: 0.1em; text-transform: uppercase;
+      padding: 0.4rem 0.85rem; border-radius: var(--radius);
+      cursor: pointer; transition: all 0.2s;
+    }
+    .btn-danger:hover { background: rgba(239,68,68,0.1); }
+
+    .btn-sm {
+      background: var(--surface); border: 1px solid var(--border);
+      color: var(--muted); font-family: var(--mono); font-size: 0.65rem;
+      letter-spacing: 0.1em; text-transform: uppercase;
+      padding: 0.4rem 0.85rem; border-radius: var(--radius);
+      cursor: pointer; transition: all 0.2s;
+    }
+    .btn-sm:hover { color: var(--text); border-color: rgba(255,255,255,0.2); }
+
+    /* ── RESPONSIVE ── */
+    @media (max-width: 700px) {
+      .admin-layout { grid-template-columns: 1fr; }
+      .sidebar { position: static; height: auto; }
+      .field-group { grid-template-columns: 1fr; }
+    }
+
+    /* ── Repeater rows (charinfo editors) ── */
+    .repeater-row {
+      display: flex;
+      align-items: flex-start;
+      gap: 8px;
+    }
+    .remove-btn {
+      flex-shrink: 0;
+      background: rgba(255,69,0,0.12);
+      border: 1px solid rgba(255,69,0,0.25);
+      color: var(--accent);
+      border-radius: 4px;
+      width: 28px;
+      height: 28px;
+      font-size: 16px;
+      line-height: 1;
+      cursor: pointer;
+      align-self: flex-end;
+      margin-bottom: 2px;
+      transition: background 0.15s;
+    }
+    .remove-btn:hover { background: rgba(255,69,0,0.28); }
+    .add-btn {
+      margin-top: 6px;
+      background: rgba(255,255,255,0.04);
+      border: 1px dashed rgba(255,255,255,0.18);
+      color: var(--muted);
+      border-radius: 4px;
+      padding: 5px 14px;
+      font-size: 11px;
+      letter-spacing: .05em;
+      cursor: pointer;
+      transition: background 0.15s, color 0.15s, border-color 0.15s;
+    }
+    .add-btn:hover { background: rgba(255,255,255,0.08); color: var(--text); border-color: rgba(255,255,255,0.3); }
+    .field--wide { flex: 2 !important; }
+
+  </style>
+</head>
+<body>
+
+<div class="admin-layout">
+  <!-- SIDEBAR -->
+  <aside class="sidebar">
+    <div class="sidebar-logo">
+      <h1>FLAME<span>488</span></h1>
+      <p>Content Admin</p>
+    </div>
+    <nav class="sidebar-nav">
+      <div class="nav-section-label">Sections</div>
+      <a class="nav-item active" data-section="meta" onclick="goto('meta')">
+        <span class="dot"></span> Site Meta
+      </a>
+      <a class="nav-item" data-section="hero" onclick="goto('hero')">
+        <span class="dot"></span> Hero
+      </a>
+      <a class="nav-item" data-section="socials" onclick="goto('socials')">
+        <span class="dot"></span> Socials
+      </a>
+      <a class="nav-item" data-section="oc" onclick="goto('oc')">
+        <span class="dot"></span> Character
+      </a>
+      <a class="nav-item" data-section="commissions" onclick="goto('commissions')">
+        <span class="dot"></span> Commissions
+      </a>
+      <a class="nav-item" data-section="gallery" onclick="goto('gallery')">
+        <span class="dot"></span> Gallery
+      </a>
+      <a class="nav-item" data-section="charinfo" onclick="goto('charinfo')">
+        <span class="dot"></span> Character Info
+      </a>
+      <div class="nav-section-label" style="margin-top:0.5rem;">Export</div>
+      <a class="nav-item" data-section="export" onclick="goto('export')">
+        <span class="dot"></span> Export content.js
+      </a>
+    </nav>
+    <div class="sidebar-footer">
+      <a href="gallery.html" target="_blank" class="btn-preview">↗ Gallery</a>
+      <a href="commissions.html" target="_blank" class="btn-preview">↗ Commissions</a>
+      <a href="oc.html" target="_blank" class="btn-preview">↗ Character</a>
+      <a href="index.html" target="_blank" class="btn-preview">↗ Preview Site</a>
+    </div>
+  </aside>
+
+  <!-- MAIN -->
+  <div style="overflow-y:auto;">
+    <main class="main" id="main-content">
+
+      <!-- ── META ── -->
+      <section id="section-meta">
+        <div class="page-header">
+          <h2>Site Meta</h2>
+          <p>Browser tab, SEO, and theme color settings.</p>
+        </div>
+        <div class="panel open">
+          <div class="panel-header" onclick="togglePanel(this)">
+            <span class="panel-title">Metadata <span class="pill">SEO</span></span>
+            <span class="panel-chevron">▾</span>
+          </div>
+          <div class="panel-body">
+            <div class="field-group">
+              <div class="field">
+                <label>Site Title</label>
+                <input type="text" id="meta.siteTitle" />
+              </div>
+              <div class="field">
+                <label>Tab Title</label>
+                <input type="text" id="meta.tabTitle" />
+              </div>
+            </div>
+            <div class="field-group full">
+              <div class="field">
+                <label>Description <span class="hint">Used for SEO &amp; social previews</span></label>
+                <textarea id="meta.description" rows="2"></textarea>
+              </div>
+            </div>
+            <div class="field-group">
+              <div class="field">
+                <label>OG Image Path <span class="hint">e.g. assets/images/card500b.jpg</span></label>
+                <input type="text" id="meta.ogImage" />
+              </div>
+              <div class="field">
+                <label>Accent Color</label>
+                <input type="color" id="meta.accentColor" />
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ── HERO ── -->
+      <section id="section-hero" style="display:none;">
+        <div class="page-header">
+          <h2>Hero Section</h2>
+          <p>The first thing visitors see — your name, tagline, and image.</p>
+        </div>
+        <div class="panel open">
+          <div class="panel-header" onclick="togglePanel(this)">
+            <span class="panel-title">Hero Content</span>
+            <span class="panel-chevron">▾</span>
+          </div>
+          <div class="panel-body">
+            <div class="field-group">
+              <div class="field">
+                <label>Display Name</label>
+                <input type="text" id="hero.name" />
+              </div>
+              <div class="field">
+                <label>Tagline <span class="hint">shown as eyebrow text</span></label>
+                <input type="text" id="hero.tagline" />
+              </div>
+            </div>
+            <div class="field-group full">
+              <div class="field">
+                <label>Bio</label>
+                <textarea id="hero.bio" rows="2"></textarea>
+              </div>
+            </div>
+            <div class="field-group full">
+              <div class="field">
+                <label>Hero Image Path <span class="hint">e.g. assets/images/image01.jpg</span></label>
+                <input type="text" id="hero.heroImage" />
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="panel open">
+          <div class="panel-header" onclick="togglePanel(this)">
+            <span class="panel-title">Quick-Nav Buttons <span class="pill">CTA</span></span>
+            <span class="panel-chevron">▾</span>
+          </div>
+          <div class="panel-body">
+            <p style="font-size:0.8rem;color:var(--muted);margin-bottom:0.75rem;">Buttons displayed in the hero section.</p>
+            <div class="list-editor" id="hero-quicklinks"></div>
+            <button class="btn-add" onclick="addQuickLink()">+ Add Button</button>
+          </div>
+        </div>
+      </section>
+
+      <!-- ── SOCIALS ── -->
+      <section id="section-socials" style="display:none;">
+        <div class="page-header">
+          <h2>Social Links</h2>
+          <p>Displayed as pills in the hero section.</p>
+        </div>
+        <div class="panel open">
+          <div class="panel-header" onclick="togglePanel(this)">
+            <span class="panel-title">Platforms</span>
+            <span class="panel-chevron">▾</span>
+          </div>
+          <div class="panel-body">
+            <div class="list-editor" id="socials-list"></div>
+            <button class="btn-add" onclick="addSocial()">+ Add Platform</button>
+          </div>
+        </div>
+      </section>
+
+      <!-- ── OC ── -->
+      <section id="section-oc" style="display:none;">
+        <div class="page-header">
+          <h2>Character</h2>
+          <p>Your original character section.</p>
+        </div>
+        <div class="panel open">
+          <div class="panel-header" onclick="togglePanel(this)">
+            <span class="panel-title">Character Info</span>
+            <span class="panel-chevron">▾</span>
+          </div>
+          <div class="panel-body">
+            <div class="field-group">
+              <div class="field">
+                <label>Character Name</label>
+                <input type="text" id="oc.heading" />
+              </div>
+              <div class="field">
+                <label>Subheading</label>
+                <input type="text" id="oc.subheading" />
+              </div>
+            </div>
+            <div class="field-group full">
+              <div class="field">
+                <label>Teaser Text <span class="hint">short blurb on the homepage preview card</span></label>
+                <textarea id="oc.teaser" rows="2"></textarea>
+              </div>
+            </div>
+            <div class="field-group full">
+              <div class="field">
+                <label>Body Text <span class="hint">**bold** is supported</span></label>
+                <textarea id="oc.body" rows="4"></textarea>
+              </div>
+            </div>
+            <div class="field-group">
+              <div class="field">
+                <label>Image Path</label>
+                <input type="text" id="oc.image" />
+              </div>
+              <div class="field">
+                <label>Character Info Page URL</label>
+                <input type="text" id="oc.characterInfoUrl" />
+              </div>
+            </div>
+            <div class="field-group">
+              <div class="field">
+                <label>Badge Text <span class="hint">e.g. "Available on Request"</span></label>
+                <input type="text" id="oc.badge" />
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ── COMMISSIONS ── -->
+      <section id="section-commissions" style="display:none;">
+        <div class="page-header">
+          <h2>Commissions</h2>
+          <p>Pricing, process, terms, and contact info.</p>
+        </div>
+
+        <div class="panel open">
+          <div class="panel-header" onclick="togglePanel(this)">
+            <span class="panel-title">Header</span>
+            <span class="panel-chevron">▾</span>
+          </div>
+          <div class="panel-body">
+            <div class="field-group">
+              <div class="field">
+                <label>Commission Status</label>
+                <select id="commissions.statusOpen" onchange="DATA.commissions.statusOpen = this.value === 'true'">
+                  <option value="true">Open</option>
+                  <option value="false">Closed</option>
+                </select>
+              </div>
+            </div>
+            <div class="field-group full">
+              <div class="field">
+                <label>Status Note <span class="hint">shown on homepage teaser</span></label>
+                <textarea id="commissions.statusNote" rows="2"></textarea>
+              </div>
+            </div>
+            <div class="field-group">
+              <div class="field">
+                <label>Heading</label>
+                <input type="text" id="commissions.heading" />
+              </div>
+              <div class="field">
+                <label>Subheading</label>
+                <input type="text" id="commissions.subheading" />
+              </div>
+            </div>
+            <div class="field-group">
+              <div class="field">
+                <label>Image Path</label>
+                <input type="text" id="commissions.image" />
+              </div>
+            </div>
+            <div class="field-group full">
+              <div class="field">
+                <label>Intro Text</label>
+                <textarea id="commissions.intro" rows="2"></textarea>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="panel open">
+          <div class="panel-header" onclick="togglePanel(this)">
+            <span class="panel-title">Pricing <span class="pill">Services</span></span>
+            <span class="panel-chevron">▾</span>
+          </div>
+          <div class="panel-body">
+            <div class="list-editor" id="services-list"></div>
+            <button class="btn-add" onclick="addService()">+ Add Service</button>
+          </div>
+        </div>
+
+        <div class="panel open">
+          <div class="panel-header" onclick="togglePanel(this)">
+            <span class="panel-title">Process Steps <span class="pill">How It Works</span></span>
+            <span class="panel-chevron">▾</span>
+          </div>
+          <div class="panel-body">
+            <p style="font-size:0.8rem;color:var(--muted);margin-bottom:0.75rem;">**bold** supported</p>
+            <div class="list-editor" id="process-list"></div>
+            <button class="btn-add" onclick="addProcess()">+ Add Step</button>
+          </div>
+        </div>
+
+        <div class="panel open">
+          <div class="panel-header" onclick="togglePanel(this)">
+            <span class="panel-title">Terms of Service</span>
+            <span class="panel-chevron">▾</span>
+          </div>
+          <div class="panel-body">
+            <div class="list-editor" id="tos-list-editor"></div>
+            <button class="btn-add" onclick="addTos()">+ Add Term</button>
+          </div>
+        </div>
+
+        <div class="panel open">
+          <div class="panel-header" onclick="togglePanel(this)">
+            <span class="panel-title">Contact Handles</span>
+            <span class="panel-chevron">▾</span>
+          </div>
+          <div class="panel-body">
+            <div class="field-group">
+              <div class="field">
+                <label>Discord Handle</label>
+                <input type="text" id="commissions.contact.discord" />
+              </div>
+              <div class="field">
+                <label>Instagram Handle</label>
+                <input type="text" id="commissions.contact.instagram" />
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ── GALLERY ── -->
+      <section id="section-gallery" style="display:none;">
+        <div class="page-header">
+          <h2>Gallery</h2>
+          <p>Manage all renders shown on gallery.html. Each item needs a title, image/video URL, and category.</p>
+        </div>
+
+        <div class="panel open">
+          <div class="panel-header" onclick="togglePanel(this)">
+            <span class="panel-title">Gallery Items <span class="pill" id="gallery-count-pill">0 items</span></span>
+            <span class="panel-chevron">▾</span>
+          </div>
+          <div class="panel-body">
+            <p style="font-size:0.8rem;color:var(--muted);margin-bottom:1rem;">
+              <strong style="color:var(--text)">src</strong> — image path (e.g. <code style="color:var(--accent);font-size:0.75rem">assets/images/image01.jpg</code>) or a YouTube URL for videos.<br>
+              <strong style="color:var(--text)">category</strong> — <code style="color:var(--accent);font-size:0.75rem">mywork</code> / <code style="color:var(--accent);font-size:0.75rem">scraped</code> / <code style="color:var(--accent);font-size:0.75rem">spoiler</code>
+            </p>
+            <div class="gallery-editor" id="gallery-editor"></div>
+            <button class="btn-add" onclick="addGalleryItem()" style="margin-top:0.5rem;">+ Add Item</button>
+          </div>
+        </div>
+      </section>
+
+      <!-- ── EXPORT ── -->
+      <section id="section-export" style="display:none;">
+        <div class="page-header">
+          <h2>Export content.js</h2>
+          <p>Copy the generated file and replace <code style="font-size:0.8em;color:var(--accent);">content.js</code> on your site.</p>
+        </div>
+        <div class="panel open">
+          <div class="panel-header" onclick="togglePanel(this)">
+            <span class="panel-title">Generated File</span>
+            <span class="panel-chevron">▾</span>
+          </div>
+          <div class="panel-body">
+            <pre class="code-block" id="code-preview">// Click "Refresh Preview" to generate</pre>
+            <div class="export-actions">
+              <button class="btn btn-primary" onclick="refreshExport()">↻ Refresh Preview</button>
+              <button class="btn btn-secondary" onclick="copyExport()">Copy to Clipboard</button>
+              <button class="btn btn-secondary" onclick="downloadExport()">↓ Download content.js</button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ════════════════════════════════════════════════════════
+           CHARACTER INFO SECTION
+      ═══════════════════════════════════════════════════════════ -->
+      <section id="section-charinfo" style="display:none;">
+        <div class="page-header">
+          <h2>Character Info</h2>
+          <p>Edit your character's identity, abilities, stats, and forms — shown on the Character Info page.</p>
+          <a href="characterinfo.html" target="_blank" class="btn-preview">↗ Preview</a>
+        </div>
+
+        <!-- IDENTITY -->
+        <div class="panel open">
+          <div class="panel-title" onclick="this.parentElement.classList.toggle('open')">Identity</div>
+          <div class="panel-body">
+            <div class="field-group">
+              <div class="field field--wide">
+                <label>Full Name</label>
+                <input type="text" id="characterInfo.name" />
+              </div>
+              <div class="field field--wide">
+                <label>Alias (shown as <code>// alias</code>)</label>
+                <input type="text" id="characterInfo.alias" />
+              </div>
+            </div>
+            <div class="field">
+              <label>Bio</label>
+              <textarea id="characterInfo.bio" rows="3"></textarea>
+            </div>
+            <div class="field-group">
+              <div class="field">
+                <label>Private Version</label>
+                <input type="text" id="characterInfo.privateVersion" placeholder="e.g. 2.5.6" />
+              </div>
+              <div class="field">
+                <label>Latest Version</label>
+                <input type="text" id="characterInfo.latestVersion" placeholder="e.g. V5" />
+              </div>
+              <div class="field">
+                <label>Version Note</label>
+                <input type="text" id="characterInfo.versionNote" placeholder="e.g. unreleased" />
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- IDENTITY TAGS -->
+        <div class="panel open">
+          <div class="panel-title" onclick="this.parentElement.classList.toggle('open')">Identity Tags</div>
+          <div class="panel-body">
+            <p style="font-size:12px;color:var(--muted);margin-bottom:12px;">Tag styles: <code>default</code> · <code>energy</code> · <code>weapon</code></p>
+            <div id="charinfo-tags-editor"></div>
+            <button class="add-btn" onclick="addCharTag()">+ Add Tag</button>
+          </div>
+        </div>
+
+        <!-- SHOWCASE IMAGES -->
+        <div class="panel open">
+          <div class="panel-title" onclick="this.parentElement.classList.toggle('open')">Showcase Images (Static Sheet Slider)</div>
+          <div class="panel-body">
+            <p style="font-size:12px;color:var(--muted);margin-bottom:12px;">These appear as a horizontal swipeable slider on the static character sheet. Add image paths or full URLs. Leave empty to hide the slider.</p>
+            <div id="charinfo-images-editor"></div>
+            <button class="add-btn" onclick="addCharImage()">+ Add Image</button>
+          </div>
+        </div>
+
+        <!-- ARSENAL -->
+        <div class="panel open">
+          <div class="panel-title" onclick="this.parentElement.classList.toggle('open')">Arsenal</div>
+          <div class="panel-body">
+            <h4 style="font-size:11px;letter-spacing:.08em;color:#ff5555;text-transform:uppercase;margin-bottom:8px;">⚔ Offense</h4>
+            <div id="charinfo-offense-editor"></div>
+            <button class="add-btn" onclick="addAbility('offense')">+ Add Offense Ability</button>
+
+            <h4 style="font-size:11px;letter-spacing:.08em;color:#4a9eff;text-transform:uppercase;margin:16px 0 8px;">🛡 Defense</h4>
+            <div id="charinfo-defense-editor"></div>
+            <button class="add-btn" onclick="addAbility('defense')">+ Add Defense Ability</button>
+
+            <h4 style="font-size:11px;letter-spacing:.08em;color:#44cc88;text-transform:uppercase;margin:16px 0 8px;">⚡ Mobility</h4>
+            <div id="charinfo-mobility-editor"></div>
+            <button class="add-btn" onclick="addAbility('mobility')">+ Add Mobility Ability</button>
+          </div>
+        </div>
+
+        <!-- FORMS -->
+        <div class="panel open">
+          <div class="panel-title" onclick="this.parentElement.classList.toggle('open')">Forms</div>
+          <div class="panel-body">
+            <p style="font-size:12px;color:var(--muted);margin-bottom:12px;">Style IDs: <code>blue</code> · <code>dark</code> · <code>corrupted</code> — Warning text shows blinking when not empty.</p>
+            <div id="charinfo-forms-editor"></div>
+            <button class="add-btn" onclick="addForm()">+ Add Form</button>
+          </div>
+        </div>
+
+        <!-- THREAT STATS -->
+        <div class="panel open">
+          <div class="panel-title" onclick="this.parentElement.classList.toggle('open')">Threat Profile Stats</div>
+          <div class="panel-body">
+            <p style="font-size:12px;color:var(--muted);margin-bottom:12px;">Stat bars (0–100). Gradient is a CSS <code>linear-gradient()</code> string.</p>
+            <div id="charinfo-stats-editor"></div>
+            <button class="add-btn" onclick="addStat()">+ Add Stat</button>
+          </div>
+        </div>
+
+        <!-- EXPLOITS -->
+        <div class="panel open">
+          <div class="panel-title" onclick="this.parentElement.classList.toggle('open')">Known Exploits / Vulnerabilities</div>
+          <div class="panel-body">
+            <div id="charinfo-exploits-editor"></div>
+            <button class="add-btn" onclick="addExploit()">+ Add Exploit</button>
+          </div>
+        </div>
+
+      </section><!-- /section-charinfo -->
+
+    </main>
+
+    <!-- ACTION BAR -->
+    <div class="action-bar">
+      <span class="action-status" id="action-status">Unsaved changes</span>
+      <div class="action-buttons">
+        <button class="btn btn-secondary" onclick="revertChanges()">Revert</button>
+        <button class="btn btn-primary" onclick="saveChanges()">Save Changes</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div id="toast"></div>
+
+<script src="content.js"></script>
+<script>
+// Deep clone the original for revert
+let DATA = JSON.parse(JSON.stringify(PORTFOLIO_CONTENT));
+let originalData = JSON.parse(JSON.stringify(PORTFOLIO_CONTENT));
+
+// ── NAVIGATION ──────────────────────────────────────────
+function goto(section) {
+  document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
+  document.querySelector(`[data-section="${section}"]`).classList.add('active');
+  document.querySelectorAll('main > section').forEach(el => el.style.display = 'none');
+  document.getElementById('section-' + section).style.display = 'block';
+  if (section === 'export') refreshExport();
+  if (section === 'gallery') renderGallery();
+}
+goto('meta');
+
+// ── PANEL TOGGLE ────────────────────────────────────────
+function togglePanel(header) {
+  header.closest('.panel').classList.toggle('open');
+}
+
+// ── POPULATE FIELDS ─────────────────────────────────────
+function populateField(id, value) {
+  const el = document.getElementById(id);
+  if (!el) return;
+  el.value = value ?? '';
+}
+
+function populate() {
+  const D = DATA;
+  // meta
+  populateField('meta.siteTitle', D.meta.siteTitle);
+  populateField('meta.tabTitle',  D.meta.tabTitle);
+  populateField('meta.description', D.meta.description);
+  populateField('meta.ogImage',   D.meta.ogImage);
+  populateField('meta.accentColor', D.meta.accentColor);
+
+  // hero
+  populateField('hero.name',      D.hero.name);
+  populateField('hero.tagline',   D.hero.tagline);
+  populateField('hero.bio',       D.hero.bio);
+  populateField('hero.heroImage', D.hero.heroImage);
+  renderQuickLinks();
+
+  // socials
+  renderSocials();
+
+  // oc
+  populateField('oc.heading',         D.oc.heading);
+  populateField('oc.subheading',      D.oc.subheading);
+  populateField('oc.teaser',          D.oc.teaser || '');
+  populateField('oc.image',           D.oc.image);
+  populateField('oc.body',            D.oc.body);
+  populateField('oc.characterInfoUrl',D.oc.characterInfoUrl);
+  populateField('oc.badge',           D.oc.badge);
+
+  // commissions
+  populateField('commissions.heading',    D.commissions.heading);
+  populateField('commissions.subheading', D.commissions.subheading);
+  populateField('commissions.statusNote', D.commissions.statusNote || '');
+  populateField('commissions.image',      D.commissions.image);
+  populateField('commissions.intro',      D.commissions.intro);
+  populateField('commissions.contact.discord',   D.commissions.contact.discord);
+  populateField('commissions.contact.instagram', D.commissions.contact.instagram);
+  // statusOpen dropdown
+  const soEl = document.getElementById('commissions.statusOpen');
+  if (soEl) soEl.value = String(D.commissions.statusOpen !== false);
+  renderServices();
+  renderProcess();
+  renderTos();
+  renderGallery();
+
+  // ── CHARACTER INFO ──────────────────────────────────────
+  const CI = DATA.characterInfo;
+  populateField('characterInfo.name',           CI.name);
+  populateField('characterInfo.alias',          CI.alias);
+  populateField('characterInfo.bio',            CI.bio);
+  populateField('characterInfo.privateVersion', CI.privateVersion);
+  populateField('characterInfo.latestVersion',  CI.latestVersion);
+  populateField('characterInfo.versionNote',    CI.versionNote);
+  renderCharImages();
+  renderCharTags();
+  renderAbilities('offense');
+  renderAbilities('defense');
+  renderAbilities('mobility');
+  renderForms();
+  renderStats();
+  renderExploits();
+}
+
+// ── LIST RENDERERS ───────────────────────────────────────
+function renderQuickLinks() {
+  const el = document.getElementById('hero-quicklinks');
+  el.innerHTML = DATA.hero.quickLinks.map((l, i) => `
+    <div class="list-row">
+      <span class="btn-drag">⠿</span>
+      <input type="text" value="${esc(l.label)}" placeholder="Label" onchange="DATA.hero.quickLinks[${i}].label = this.value" />
+      <input type="text" value="${esc(l.href)}" placeholder="#section-id" onchange="DATA.hero.quickLinks[${i}].href = this.value" style="flex:0.8" />
+      <input type="text" value="${esc(l.icon)}" placeholder="icon" onchange="DATA.hero.quickLinks[${i}].icon = this.value" style="width:60px;flex:none" />
+      <button class="btn-icon" title="Remove" onclick="DATA.hero.quickLinks.splice(${i},1);renderQuickLinks()">✕</button>
+    </div>`).join('');
+}
+
+function addQuickLink() {
+  DATA.hero.quickLinks.push({ label: 'New Link', href: '#', icon: 'user' });
+  renderQuickLinks();
+}
+
+function renderSocials() {
+  const el = document.getElementById('socials-list');
+  el.innerHTML = DATA.socials.map((s, i) => `
+    <div class="list-row">
+      <span class="btn-drag">⠿</span>
+      <input type="text" value="${esc(s.platform)}" placeholder="Platform" onchange="DATA.socials[${i}].platform = this.value" style="width:100px;flex:none" />
+      <input type="text" value="${esc(s.url)}" placeholder="https://..." onchange="DATA.socials[${i}].url = this.value" />
+      <input type="text" value="${esc(s.icon)}" placeholder="icon" onchange="DATA.socials[${i}].icon = this.value" style="width:90px;flex:none" />
+      <button class="btn-icon" title="Remove" onclick="DATA.socials.splice(${i},1);renderSocials()">✕</button>
+    </div>`).join('');
+}
+
+function addSocial() {
+  DATA.socials.push({ platform: 'Platform', url: 'https://', icon: 'instagram' });
+  renderSocials();
+}
+
+function renderServices() {
+  const el = document.getElementById('services-list');
+  el.innerHTML = DATA.commissions.services.map((s, i) => `
+    <div class="list-row">
+      <span class="btn-drag">⠿</span>
+      <input type="text" value="${esc(s.name)}" placeholder="Service name" onchange="DATA.commissions.services[${i}].name = this.value" />
+      <input type="text" class="price-input" value="${esc(s.price)}" placeholder="$0" onchange="DATA.commissions.services[${i}].price = this.value" />
+      <input type="text" class="note-input" value="${esc(s.note)}" placeholder="Note (optional)" onchange="DATA.commissions.services[${i}].note = this.value" />
+      <button class="btn-icon" title="Remove" onclick="DATA.commissions.services.splice(${i},1);renderServices()">✕</button>
+    </div>`).join('');
+}
+
+function addService() {
+  DATA.commissions.services.push({ name: 'New Service', price: '$0', note: '' });
+  renderServices();
+}
+
+function renderProcess() {
+  const el = document.getElementById('process-list');
+  el.innerHTML = DATA.commissions.process.map((p, i) => `
+    <div class="list-row">
+      <span style="font-family:var(--mono);font-size:0.6rem;color:var(--muted);width:20px;flex:none;">${String(i+1).padStart(2,'0')}</span>
+      <input type="text" value="${esc(p)}" placeholder="Step description" onchange="DATA.commissions.process[${i}] = this.value" />
+      <button class="btn-icon" title="Remove" onclick="DATA.commissions.process.splice(${i},1);renderProcess()">✕</button>
+    </div>`).join('');
+}
+
+function addProcess() {
+  DATA.commissions.process.push('**New step** — description here.');
+  renderProcess();
+}
+
+function renderTos() {
+  const el = document.getElementById('tos-list-editor');
+  el.innerHTML = DATA.commissions.tos.map((t, i) => `
+    <div class="list-row">
+      <input type="text" value="${esc(t)}" placeholder="Term" onchange="DATA.commissions.tos[${i}] = this.value" />
+      <button class="btn-icon" title="Remove" onclick="DATA.commissions.tos.splice(${i},1);renderTos()">✕</button>
+    </div>`).join('');
+}
+
+function addTos() {
+  DATA.commissions.tos.push('New term.');
+  renderTos();
+}
+
+// ── GALLERY EDITOR ────────────────────────────────────
+function renderGallery() {
+  if (!DATA.gallery) DATA.gallery = [];
+  const el = document.getElementById('gallery-editor');
+  const pill = document.getElementById('gallery-count-pill');
+  if (pill) pill.textContent = DATA.gallery.length + ' item' + (DATA.gallery.length !== 1 ? 's' : '');
+
+  el.innerHTML = DATA.gallery.map((item, i) => {
+    const thumb = isYTAdmin(item.src)
+      ? `https://img.youtube.com/vi/${ytIdAdmin(item.src)}/mqdefault.jpg`
+      : (item.src || '');
+    const catClass = item.category || '';
+    return `
+    <div class="gallery-item-card" id="gcard-${i}">
+      <div class="gallery-item-header" onclick="toggleGalleryCard(${i})">
+        ${thumb ? `<img class="gallery-item-thumb" src="${esc(thumb)}" onerror="this.style.display='none'" />` : '<div class="gallery-item-thumb"></div>'}
+        <span class="gallery-item-title-display">${esc(item.title || 'Untitled')}</span>
+        <span class="gallery-item-cat-tag ${catClass}">${catClass || 'none'}</span>
+        <span style="color:var(--muted);font-size:0.8rem;margin-left:0.25rem;">▾</span>
+      </div>
+      <div class="gallery-item-body">
+        <div class="gallery-item-fields">
+          <div class="field field-full">
+            <label>Title <span class="hint">shown in lightbox</span></label>
+            <input type="text" value="${esc(item.title)}" placeholder="e.g. HellAway Promo"
+              onchange="DATA.gallery[${i}].title = this.value; refreshGalleryHeader(${i})" />
+          </div>
+          <div class="field field-full">
+            <label>Source <span class="hint">image path or YouTube URL</span></label>
+            <input type="text" value="${esc(item.src)}" placeholder="assets/images/… or https://youtube.com/…"
+              onchange="DATA.gallery[${i}].src = this.value; refreshGalleryHeader(${i})" />
+          </div>
+          <div class="field">
+            <label>Category</label>
+            <select onchange="DATA.gallery[${i}].category = this.value; refreshGalleryHeader(${i})">
+              <option value="mywork"  ${item.category === 'mywork'  ? 'selected' : ''}>My Work</option>
+              <option value="scraped" ${item.category === 'scraped' ? 'selected' : ''}>Scraped</option>
+              <option value="spoiler" ${item.category === 'spoiler' ? 'selected' : ''}>Spoiler</option>
+            </select>
+          </div>
+          <div class="field">
+            <label>Spoiler blur?</label>
+            <select onchange="DATA.gallery[${i}].spoiler = this.value === 'true'">
+              <option value="false" ${!item.spoiler ? 'selected' : ''}>No</option>
+              <option value="true"  ${item.spoiler  ? 'selected' : ''}>Yes — blur until hover</option>
+            </select>
+          </div>
+        </div>
+        <div class="gallery-item-actions">
+          ${i > 0 ? `<button class="btn-sm" onclick="moveGalleryItem(${i}, -1)">↑ Move Up</button>` : ''}
+          ${i < DATA.gallery.length - 1 ? `<button class="btn-sm" onclick="moveGalleryItem(${i}, 1)">↓ Move Down</button>` : ''}
+          <button class="btn-danger" onclick="removeGalleryItem(${i})">Remove</button>
+        </div>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function toggleGalleryCard(i) {
+  const card = document.getElementById('gcard-' + i);
+  if (card) card.classList.toggle('open');
+}
+
+function refreshGalleryHeader(i) {
+  const item = DATA.gallery[i];
+  const card = document.getElementById('gcard-' + i);
+  if (!card) return;
+  const titleEl = card.querySelector('.gallery-item-title-display');
+  const catEl   = card.querySelector('.gallery-item-cat-tag');
+  const thumbEl = card.querySelector('.gallery-item-thumb');
+  if (titleEl) titleEl.textContent = item.title || 'Untitled';
+  if (catEl)   { catEl.textContent = item.category || 'none'; catEl.className = 'gallery-item-cat-tag ' + (item.category || ''); }
+  if (thumbEl && thumbEl.tagName === 'IMG') {
+    const newSrc = isYTAdmin(item.src)
+      ? `https://img.youtube.com/vi/${ytIdAdmin(item.src)}/mqdefault.jpg`
+      : item.src;
+    thumbEl.src = newSrc;
+  }
+  const pill = document.getElementById('gallery-count-pill');
+  if (pill) pill.textContent = DATA.gallery.length + ' item' + (DATA.gallery.length !== 1 ? 's' : '');
+}
+
+function addGalleryItem() {
+  if (!DATA.gallery) DATA.gallery = [];
+  DATA.gallery.push({ title: 'New Render', src: '', category: 'mywork', type: 'image', spoiler: false });
+  renderGallery();
+  // Auto-open the new item
+  setTimeout(() => {
+    const card = document.getElementById('gcard-' + (DATA.gallery.length - 1));
+    if (card) card.classList.add('open');
+  }, 50);
+}
+
+function removeGalleryItem(i) {
+  DATA.gallery.splice(i, 1);
+  renderGallery();
+}
+
+function moveGalleryItem(i, dir) {
+  const j = i + dir;
+  if (j < 0 || j >= DATA.gallery.length) return;
+  [DATA.gallery[i], DATA.gallery[j]] = [DATA.gallery[j], DATA.gallery[i]];
+  renderGallery();
+}
+
+// YouTube helpers (admin context)
+function ytIdAdmin(url) {
+  const m = (url||'').match(/(?:youtu\.be\/|youtube\.com\/(?:watch\?v=|embed\/|v\/|shorts\/))([a-zA-Z0-9_-]{11})/);
+  return m ? m[1] : null;
+}
+function isYTAdmin(url) { return !!ytIdAdmin(url); }
+
+// ── COLLECT SIMPLE FIELDS ────────────────────────────────
+function collect() {
+  function g(id) { const el = document.getElementById(id); return el ? el.value : ''; }
+  DATA.meta.siteTitle   = g('meta.siteTitle');
+  DATA.meta.tabTitle    = g('meta.tabTitle');
+  DATA.meta.description = g('meta.description');
+  DATA.meta.ogImage     = g('meta.ogImage');
+  DATA.meta.accentColor = g('meta.accentColor');
+
+  DATA.hero.name      = g('hero.name');
+  DATA.hero.tagline   = g('hero.tagline');
+  DATA.hero.bio       = g('hero.bio');
+  DATA.hero.heroImage = g('hero.heroImage');
+
+  DATA.oc.heading         = g('oc.heading');
+  DATA.oc.subheading      = g('oc.subheading');
+  DATA.oc.teaser          = g('oc.teaser');
+  DATA.oc.image           = g('oc.image');
+  DATA.oc.body            = g('oc.body');
+  DATA.oc.characterInfoUrl= g('oc.characterInfoUrl');
+  DATA.oc.badge           = g('oc.badge');
+
+  DATA.commissions.heading    = g('commissions.heading');
+  DATA.commissions.subheading = g('commissions.subheading');
+  DATA.commissions.statusNote = g('commissions.statusNote');
+  DATA.commissions.image      = g('commissions.image');
+  DATA.commissions.intro      = g('commissions.intro');
+  DATA.commissions.contact.discord   = g('commissions.contact.discord');
+  DATA.commissions.contact.instagram = g('commissions.contact.instagram');
+  const soEl2 = document.getElementById('commissions.statusOpen');
+  if (soEl2) DATA.commissions.statusOpen = soEl2.value === 'true';
+  // Gallery is collected live via onchange handlers — no extra step needed
+
+  // ── CHARACTER INFO simple fields (mutating arrays handled live via onchange) ──
+  DATA.characterInfo.name           = g('characterInfo.name');
+  DATA.characterInfo.alias          = g('characterInfo.alias');
+  DATA.characterInfo.bio            = g('characterInfo.bio');
+  DATA.characterInfo.privateVersion = g('characterInfo.privateVersion');
+  DATA.characterInfo.latestVersion  = g('characterInfo.latestVersion');
+  DATA.characterInfo.versionNote    = g('characterInfo.versionNote');
+  // images mutated live via onchange
+}
+
+// ── SAVE (localStorage) ──────────────────────────────────
+function saveChanges() {
+  collect();
+  try {
+    localStorage.setItem('flame488_content', JSON.stringify(DATA));
+    setStatus('saved', '✓ Changes saved');
+    toast('Changes saved!', 'success');
+  } catch(e) {
+    setStatus('error', '✗ Save failed');
+    toast('Save failed: ' + e.message, 'error');
+  }
+}
+
+function revertChanges() {
+  DATA = JSON.parse(JSON.stringify(originalData));
+  populate();
+  setStatus('', 'Reverted to original');
+  toast('Reverted to original content.js', 'success');
+}
+
+function setStatus(type, msg) {
+  const el = document.getElementById('action-status');
+  el.textContent = msg;
+  el.className = 'action-status ' + type;
+}
+
+// ── EXPORT ───────────────────────────────────────────────
+function generateJs() {
+  collect();
+  return `// ============================================================
+//  FLAME488 PORTFOLIO — CONTENT CONFIGURATION
+//  Edit this file (or use admin.html) to update the site.
+// ============================================================
+
+const PORTFOLIO_CONTENT = ${JSON.stringify(DATA, null, 2)};
+
+// Make available globally (used by index.html)
+if (typeof module !== "undefined") module.exports = PORTFOLIO_CONTENT;`;
+}
+
+function refreshExport() {
+  document.getElementById('code-preview').textContent = generateJs();
+}
+
+function copyExport() {
+  navigator.clipboard.writeText(generateJs())
+    .then(() => toast('Copied to clipboard!', 'success'))
+    .catch(() => toast('Copy failed — use Download instead', 'error'));
+}
+
+function downloadExport() {
+  const blob = new Blob([generateJs()], { type: 'text/javascript' });
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = 'content.js';
+  a.click();
+  toast('Downloading content.js…', 'success');
+}
+
+// ── TOAST ────────────────────────────────────────────────
+let toastTimer;
+function toast(msg, type = '') {
+  const el = document.getElementById('toast');
+  el.textContent = msg;
+  el.className = 'show ' + type;
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => { el.className = ''; }, 2500);
+}
+
+// ── ESCAPE HTML ─────────────────────────────────────────
+function esc(str) {
+  return String(str || '').replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;');
+}
+
+
+// ════════════════════════════════════════════════════════════
+// CHARACTER INFO EDITORS
+// ════════════════════════════════════════════════════════════
+
+// ── Images ───────────────────────────────────────────────────
+function renderCharImages() {
+  const el = document.getElementById('charinfo-images-editor');
+  if (!el) return;
+  const imgs = DATA.characterInfo.images || [];
+  el.innerHTML = imgs.map((src, i) => `
+    <div class="repeater-row" style="margin-bottom:8px;">
+      <div class="field" style="flex:1;margin:0;">
+        <label>Image ${i + 1} path or URL</label>
+        <input type="text" value="${escHtml(src)}" placeholder="assets/images/example.jpg"
+          onchange="DATA.characterInfo.images[${i}]=this.value" />
+      </div>
+      <button class="remove-btn" onclick="removeCharImage(${i})" title="Remove">×</button>
+    </div>`).join('') || '<p style="font-size:12px;color:var(--muted)">No images added yet.</p>';
+}
+function addCharImage() {
+  if (!DATA.characterInfo.images) DATA.characterInfo.images = [];
+  DATA.characterInfo.images.push('');
+  renderCharImages();
+}
+function removeCharImage(i) {
+  DATA.characterInfo.images.splice(i, 1);
+  renderCharImages();
+}
+
+// ── Tags ─────────────────────────────────────────────────────
+function renderCharTags() {
+  const el = document.getElementById('charinfo-tags-editor');
+  if (!el) return;
+  el.innerHTML = DATA.characterInfo.tags.map((t, i) => `
+    <div class="repeater-row" style="margin-bottom:8px;">
+      <div class="field-group" style="flex:1;margin:0;">
+        <div class="field">
+          <label>Label</label>
+          <input type="text" value="${escHtml(t.label)}"
+            onchange="DATA.characterInfo.tags[${i}].label=this.value" />
+        </div>
+        <div class="field">
+          <label>Style</label>
+          <select onchange="DATA.characterInfo.tags[${i}].style=this.value">
+            <option value="default" ${t.style==='default'?'selected':''}>default</option>
+            <option value="energy"  ${t.style==='energy' ?'selected':''}>energy</option>
+            <option value="weapon"  ${t.style==='weapon' ?'selected':''}>weapon</option>
+          </select>
+        </div>
+      </div>
+      <button class="remove-btn" onclick="removeCharTag(${i})" title="Remove">×</button>
+    </div>`).join('');
+}
+function addCharTag() {
+  DATA.characterInfo.tags.push({ label: 'New Tag', style: 'default' });
+  renderCharTags();
+}
+function removeCharTag(i) {
+  DATA.characterInfo.tags.splice(i, 1);
+  renderCharTags();
+}
+
+// ── Arsenal ──────────────────────────────────────────────────
+function renderAbilities(type) {
+  const el = document.getElementById(`charinfo-${type}-editor`);
+  if (!el) return;
+  const items = DATA.characterInfo.arsenal[type];
+  el.innerHTML = items.map((item, i) => `
+    <div class="repeater-row" style="margin-bottom:8px;">
+      <div class="field-group" style="flex:1;margin:0;">
+        <div class="field">
+          <label>Name</label>
+          <input type="text" value="${escHtml(item.name)}"
+            onchange="DATA.characterInfo.arsenal['${type}'][${i}].name=this.value" />
+        </div>
+        <div class="field field--wide">
+          <label>Note</label>
+          <input type="text" value="${escHtml(item.note)}"
+            onchange="DATA.characterInfo.arsenal['${type}'][${i}].note=this.value" />
+        </div>
+      </div>
+      <button class="remove-btn" onclick="removeAbility('${type}',${i})" title="Remove">×</button>
+    </div>`).join('');
+}
+function addAbility(type) {
+  DATA.characterInfo.arsenal[type].push({ name: 'New Ability', note: '' });
+  renderAbilities(type);
+}
+function removeAbility(type, i) {
+  DATA.characterInfo.arsenal[type].splice(i, 1);
+  renderAbilities(type);
+}
+
+// ── Forms ─────────────────────────────────────────────────────
+function renderForms() {
+  const el = document.getElementById('charinfo-forms-editor');
+  if (!el) return;
+  el.innerHTML = DATA.characterInfo.forms.map((f, i) => `
+    <div class="repeater-row" style="flex-direction:column;align-items:stretch;gap:8px;margin-bottom:12px;padding-bottom:12px;border-bottom:1px solid var(--border);">
+      <div class="field-group" style="margin:0;">
+        <div class="field">
+          <label>Style ID</label>
+          <select onchange="DATA.characterInfo.forms[${i}].id=this.value">
+            <option value="blue"      ${f.id==='blue'     ?'selected':''}>blue (Full Power)</option>
+            <option value="dark"      ${f.id==='dark'     ?'selected':''}>dark (Dark Form)</option>
+            <option value="corrupted" ${f.id==='corrupted'?'selected':''}>corrupted</option>
+          </select>
+        </div>
+        <div class="field field--wide">
+          <label>Title</label>
+          <input type="text" value="${escHtml(f.title)}"
+            onchange="DATA.characterInfo.forms[${i}].title=this.value" />
+        </div>
+        <button class="remove-btn" onclick="removeForm(${i})" title="Remove" style="align-self:flex-end;">×</button>
+      </div>
+      <div class="field">
+        <label>Description</label>
+        <textarea rows="2" onchange="DATA.characterInfo.forms[${i}].desc=this.value">${escHtml(f.desc)}</textarea>
+      </div>
+      <div class="field">
+        <label>Warning text (leave blank for none)</label>
+        <input type="text" value="${escHtml(f.warning)}"
+          onchange="DATA.characterInfo.forms[${i}].warning=this.value"
+          placeholder="e.g. ⚠ UNPREDICTABLE" />
+      </div>
+    </div>`).join('');
+}
+function addForm() {
+  DATA.characterInfo.forms.push({ id: 'blue', title: 'NEW FORM', desc: '', warning: '' });
+  renderForms();
+}
+function removeForm(i) {
+  DATA.characterInfo.forms.splice(i, 1);
+  renderForms();
+}
+
+// ── Stats ─────────────────────────────────────────────────────
+function renderStats() {
+  const el = document.getElementById('charinfo-stats-editor');
+  if (!el) return;
+  el.innerHTML = DATA.characterInfo.stats.map((s, i) => `
+    <div class="repeater-row" style="margin-bottom:8px;">
+      <div class="field-group" style="flex:1;margin:0;">
+        <div class="field field--wide">
+          <label>Label</label>
+          <input type="text" value="${escHtml(s.label)}"
+            onchange="DATA.characterInfo.stats[${i}].label=this.value" />
+        </div>
+        <div class="field" style="min-width:70px;max-width:90px;">
+          <label>Value (0–100)</label>
+          <input type="number" min="0" max="100" value="${s.value}"
+            onchange="DATA.characterInfo.stats[${i}].value=Math.min(100,Math.max(0,+this.value))" />
+        </div>
+        <div class="field field--wide">
+          <label>Gradient (CSS)</label>
+          <input type="text" value="${escHtml(s.gradient)}"
+            onchange="DATA.characterInfo.stats[${i}].gradient=this.value"
+            placeholder="linear-gradient(90deg,#4a9eff,#9966ff)" />
+        </div>
+      </div>
+      <button class="remove-btn" onclick="removeStat(${i})" title="Remove">×</button>
+    </div>`).join('');
+}
+function addStat() {
+  DATA.characterInfo.stats.push({ label: 'New Stat', value: 50, gradient: 'linear-gradient(90deg,#4a9eff,#44ccff)' });
+  renderStats();
+}
+function removeStat(i) {
+  DATA.characterInfo.stats.splice(i, 1);
+  renderStats();
+}
+
+// ── Exploits ──────────────────────────────────────────────────
+function renderExploits() {
+  const el = document.getElementById('charinfo-exploits-editor');
+  if (!el) return;
+  el.innerHTML = DATA.characterInfo.exploits.map((e, i) => `
+    <div class="repeater-row" style="margin-bottom:8px;">
+      <div class="field-group" style="flex:1;margin:0;">
+        <div class="field">
+          <label>Tag</label>
+          <input type="text" value="${escHtml(e.tag)}"
+            onchange="DATA.characterInfo.exploits[${i}].tag=this.value" />
+        </div>
+        <div class="field field--wide">
+          <label>Note</label>
+          <input type="text" value="${escHtml(e.note)}"
+            onchange="DATA.characterInfo.exploits[${i}].note=this.value" />
+        </div>
+      </div>
+      <button class="remove-btn" onclick="removeExploit(${i})" title="Remove">×</button>
+    </div>`).join('');
+}
+function addExploit() {
+  DATA.characterInfo.exploits.push({ tag: 'New Exploit', note: '' });
+  renderExploits();
+}
+function removeExploit(i) {
+  DATA.characterInfo.exploits.splice(i, 1);
+  renderExploits();
+}
+
+// ── escHtml helper (used by all renderers) ────────────────────
+function escHtml(s) {
+  if (s === undefined || s === null) return '';
+  return String(s)
+    .replace(/&/g,'&amp;')
+    .replace(/"/g,'&quot;')
+    .replace(/</g,'&lt;')
+    .replace(/>/g,'&gt;');
+}
+
+// ── INIT ─────────────────────────────────────────────────
+// Load from localStorage if available
+const saved = localStorage.getItem('flame488_content');
+if (saved) {
+  try {
+    DATA = JSON.parse(saved);
+    toast('Loaded saved data from browser', 'success');
+  } catch(e) { /* use default */ }
+}
+
+populate();
+setStatus('', 'Ready');
+</script>
+</body>
+</html>
