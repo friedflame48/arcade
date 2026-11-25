@@ -1,0 +1,191 @@
+/* ==========================================
+   JOGO DA COBRINHA
+   ========================================== */
+:root {
+    --bg: #070d0a;
+    --card: #13201a;
+    --line: #2d5a40;
+    --green: #2ee6a0;
+    --green-soft: #62d987;
+    --text: #f1fff7;
+    --muted: #9bc4aa;
+}
+
+* { box-sizing: border-box; }
+
+body {
+    min-height: 100vh;
+    margin: 0;
+    padding: 76px 16px 28px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: var(--text);
+    font-family: 'Courier New', Courier, monospace;
+    background:
+        radial-gradient(circle at 50% -10%, rgba(46, 230, 160, .22), transparent 45%),
+        radial-gradient(circle at 90% 100%, rgba(46, 230, 160, .10), transparent 35%),
+        linear-gradient(rgba(46, 230, 160, .045) 1px, transparent 1px) 0 0 / 32px 32px,
+        linear-gradient(90deg, rgba(46, 230, 160, .045) 1px, transparent 1px) 0 0 / 32px 32px,
+        var(--bg);
+}
+
+.game-container {
+    position: relative;
+    width: min(100%, 520px);
+    padding: 28px 25px 24px;
+    text-align: center;
+    background: linear-gradient(170deg, #19291f, #101a14);
+    border: 1px solid var(--line);
+    border-radius: 24px;
+    box-shadow:
+        0 22px 70px rgba(0, 0, 0, .6),
+        0 0 40px rgba(46, 230, 160, .10),
+        inset 0 1px 0 rgba(255, 255, 255, .06);
+    animation: entrar .5s ease both;
+}
+
+h1 {
+    margin: 0 0 14px;
+    font-size: clamp(22px, 5vw, 29px);
+    letter-spacing: 1px;
+    color: var(--green);
+    text-shadow: 0 0 18px rgba(46, 230, 160, .55);
+}
+
+.score-board {
+    display: inline-block;
+    margin-bottom: 18px;
+    padding: 7px 20px;
+    color: #d6ffe6;
+    font-size: 18px;
+    font-weight: bold;
+    background: rgba(46, 230, 160, .10);
+    border: 1px solid rgba(46, 230, 160, .35);
+    border-radius: 999px;
+}
+
+.score-board span {
+    color: #ffd76b;
+    text-shadow: 0 0 10px rgba(255, 215, 107, .5);
+}
+
+.canvas-wrapper {
+    position: relative;
+    width: min(400px, 100%);
+    aspect-ratio: 1;
+    margin: 0 auto;
+    overflow: hidden;
+    border: 3px solid var(--green);
+    border-radius: 12px;
+    background: #050907;
+    box-shadow:
+        0 0 0 6px rgba(46, 230, 160, .10),
+        0 0 34px rgba(46, 230, 160, .25);
+}
+
+canvas {
+    display: block;
+    width: 100%;
+    height: 100%;
+    background: #050907;
+}
+
+.overlay-screen {
+    position: absolute;
+    inset: 0;
+    z-index: 5;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: 18px;
+    background: rgba(3, 12, 7, .93);
+    backdrop-filter: blur(3px);
+}
+
+.overlay-screen.hidden { display: none; }
+
+.overlay-screen h2 {
+    margin: 0 0 12px;
+    font-size: clamp(20px, 5vw, 26px);
+    color: #ff7a7a;
+    text-shadow: 0 0 16px rgba(255, 104, 104, .5);
+}
+
+.overlay-screen p {
+    margin: 0 0 24px;
+    font-size: 14px;
+    color: #d0ded4;
+}
+
+.overlay-screen p span {
+    color: #ffd76b;
+    font-weight: bold;
+}
+
+.btn {
+    padding: 13px 24px;
+    color: #06150c;
+    background: var(--green-soft);
+    border: 0;
+    border-radius: 10px;
+    font: bold 15px 'Courier New', Courier, monospace;
+    letter-spacing: .5px;
+    cursor: pointer;
+    box-shadow: 0 5px 0 #2f8a52, 0 10px 24px rgba(46, 230, 160, .25);
+    transition: background .2s ease, transform .15s ease, box-shadow .15s ease;
+}
+
+.btn:hover {
+    background: #86f2a8;
+    transform: translateY(-2px);
+    box-shadow: 0 7px 0 #2f8a52, 0 14px 28px rgba(46, 230, 160, .35);
+}
+
+.btn:active {
+    transform: translateY(3px);
+    box-shadow: 0 2px 0 #2f8a52;
+}
+
+.instructions {
+    margin-top: 18px;
+    color: var(--muted);
+    font-size: 12px;
+}
+
+.btn-retornar {
+    position: fixed;
+    top: 18px;
+    left: 18px;
+    z-index: 10;
+    padding: 10px 18px;
+    color: #06150c;
+    background: var(--green-soft);
+    border-radius: 999px;
+    text-decoration: none;
+    font: bold 14px 'Courier New', Courier, monospace;
+    box-shadow: 0 4px 0 #2f8a52;
+    transition: background .2s ease, transform .15s ease;
+}
+
+.btn-retornar::before { content: "← "; }
+
+.btn-retornar:hover {
+    background: #86f2a8;
+    transform: translateY(-2px);
+}
+
+@keyframes entrar {
+    from { opacity: 0; transform: translateY(16px); }
+    to   { opacity: 1; transform: translateY(0); }
+}
+
+@media (max-width: 480px) {
+    .game-container { padding: 20px 12px; border-radius: 18px; }
+    .btn-retornar { top: 12px; left: 12px; padding: 9px 13px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    * { animation: none !important; transition: none !important; }
+}

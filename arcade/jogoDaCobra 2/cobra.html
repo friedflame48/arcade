@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>A Cobrinha - Arcade</title>
+    <link rel="stylesheet" href="styleCobra.css">
+</head>
+<body>
+    <a href="../index.html" class="btn-retornar">Retornar</a>
+    <div class="game-container">
+        <h1>🐍 Jogo da Cobrinha</h1>
+        <div class="score-board">Pontuação: <span id="score">0</span></div>
+        
+        <div class="canvas-wrapper">
+            <canvas id="gameCanvas" width="400" height="400"></canvas>
+            
+            <!-- Tela Inicial -->
+            <div id="startScreen" class="overlay-screen">
+                <h2>PRONTO PARA JOGAR?</h2>
+                <p>Use W, A, S, D ou Setas</p>
+                <button class="btn" id="startBtn">INICIAR JOGO</button>
+            </div>
+
+            <!-- Tela de Game Over -->
+            <div id="gameOverScreen" class="overlay-screen hidden">
+                <h2>FIM DE JOGO!</h2>
+                <p>Sua pontuação: <span id="finalScore">0</span></p>
+                <button class="btn" id="restartBtn">JOGAR NOVAMENTE</button>
+            </div>
+        </div>
+
+        <div class="instructions">Desvie das paredes e do próprio rabo!</div>
+    </div>
+    
+    <script src="scriptCobra.js"></script>
+</body>
+</html>

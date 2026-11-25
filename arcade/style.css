@@ -1,0 +1,188 @@
+/* ==========================================
+   MENU PRINCIPAL - FRIViu-Jogou
+   ========================================== */
+:root {
+    --bg: #0b1020;
+    --card: #141a2f;
+    --line: #2a3354;
+    --text: #f2f5ff;
+    --muted: #9aa6c9;
+    --green: #2ee6a0;
+    --blue: #4cc3ff;
+    --coral: #ff6b7a;
+}
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    font-family: 'Trebuchet MS', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+body {
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 30px 16px;
+    color: var(--text);
+    background:
+        radial-gradient(circle at 12% 12%, rgba(46, 230, 160, .18), transparent 32%),
+        radial-gradient(circle at 88% 18%, rgba(255, 107, 122, .14), transparent 30%),
+        radial-gradient(circle at 70% 92%, rgba(76, 195, 255, .16), transparent 34%),
+        linear-gradient(rgba(255, 255, 255, .035) 1px, transparent 1px) 0 0 / 36px 36px,
+        linear-gradient(90deg, rgba(255, 255, 255, .035) 1px, transparent 1px) 0 0 / 36px 36px,
+        var(--bg);
+}
+
+.container {
+    position: relative;
+    width: min(100%, 800px);
+    padding: clamp(28px, 5vw, 56px);
+    text-align: center;
+    background: linear-gradient(160deg, rgba(26, 33, 58, .96), rgba(16, 21, 40, .96));
+    border: 1px solid var(--line);
+    border-radius: 28px;
+    box-shadow:
+        0 26px 80px rgba(0, 0, 0, .55),
+        inset 0 1px 0 rgba(255, 255, 255, .06);
+    animation: entrar .6s ease both;
+}
+
+/* faixa colorida no topo do card */
+.container::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 12%;
+    right: 12%;
+    height: 4px;
+    border-radius: 0 0 6px 6px;
+    background: linear-gradient(90deg, var(--green), var(--blue), var(--coral));
+}
+
+.container h1 {
+    margin-bottom: 12px;
+    font-size: clamp(2rem, 5.5vw, 3.2rem);
+    font-weight: 900;
+    letter-spacing: -1.5px;
+    line-height: 1.1;
+    color: #fff;
+    background: linear-gradient(90deg, var(--green), var(--blue) 55%, var(--coral));
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.container > p {
+    color: var(--muted);
+    font-size: 1.15rem;
+}
+
+.menu-jogos {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 22px;
+    margin-top: 38px;
+}
+
+.btn-jogo {
+    --c: var(--green);
+    --glow: rgba(46, 230, 160, .25);
+    position: relative;
+    width: 200px;
+    min-height: 200px;
+    padding: 26px 16px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 18px;
+    overflow: hidden;
+    color: #fff;
+    text-decoration: none;
+    font-size: 1.1rem;
+    font-weight: 800;
+    letter-spacing: .3px;
+    background: linear-gradient(180deg, #1e2642, #171d36);
+    border: 2px solid #323c60;
+    border-radius: 22px;
+    box-shadow: 0 6px 0 #0c1124;
+    transition: transform .2s ease, border-color .2s ease, box-shadow .2s ease;
+}
+
+/* brilho colorido que sobe no hover */
+.btn-jogo::after {
+    content: "";
+    position: absolute;
+    inset: auto 0 0 0;
+    height: 70%;
+    background: radial-gradient(circle at 50% 120%, var(--glow), transparent 70%);
+    opacity: 0;
+    transition: opacity .25s ease;
+    pointer-events: none;
+}
+
+.btn-jogo .icone {
+    position: relative;
+    z-index: 1;
+    width: 84px;
+    height: 84px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--c);
+    filter: drop-shadow(0 0 10px var(--glow));
+    transition: transform .25s ease;
+}
+
+.btn-jogo span {
+    position: relative;
+    z-index: 1;
+}
+
+.btn-jogo svg {
+    width: 100%;
+    height: 100%;
+}
+
+.btn-jogo.cobrinha { --c: var(--green); --glow: rgba(46, 230, 160, .35); }
+.btn-jogo.velha    { --c: var(--blue);  --glow: rgba(76, 195, 255, .35); }
+.btn-jogo.pingpong { --c: var(--coral); --glow: rgba(255, 107, 122, .35); }
+
+.btn-jogo:hover,
+.btn-jogo:focus-visible {
+    transform: translateY(-8px);
+    border-color: var(--c);
+    box-shadow: 0 14px 0 #0c1124, 0 18px 40px var(--glow);
+    outline: none;
+}
+
+.btn-jogo:hover::after,
+.btn-jogo:focus-visible::after { opacity: 1; }
+
+.btn-jogo:hover .icone,
+.btn-jogo:focus-visible .icone { transform: scale(1.14) rotate(-4deg); }
+
+.btn-jogo:active {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 0 #0c1124, 0 8px 24px var(--glow);
+}
+
+@keyframes entrar {
+    from { opacity: 0; transform: translateY(18px); }
+    to   { opacity: 1; transform: translateY(0); }
+}
+
+@media (max-width: 520px) {
+    .container { padding: 28px 18px; border-radius: 22px; }
+    .menu-jogos { gap: 14px; }
+    .btn-jogo { width: min(100%, 240px); min-height: 160px; }
+    .btn-jogo .icone { width: 64px; height: 64px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    * { animation: none !important; transition: none !important; }
+}
+

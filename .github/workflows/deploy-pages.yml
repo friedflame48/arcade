@@ -1,0 +1,43 @@
+name: Deploy para GitHub Pages
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: true
+
+jobs:
+  verificar-e-publicar:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Baixar codigo
+        uses: actions/checkout@v4
+
+      - name: Verificar arquivos principais
+        run: |
+          test -f arcade/index.html
+          test -f arcade/style.css
+          test -f arcade/jogoDaCobra\ 2/cobra.html
+          test -f arcade/jogo_da_velha2/index_velha.html
+          test -f arcade/pong/pong.html
+
+      - name: Configurar GitHub Pages
+        uses: actions/configure-pages@v5
+
+      - name: Preparar arquivos para publicacao
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: .
+
+      - name: Publicar no GitHub Pages
+        uses: actions/deploy-pages@v4
