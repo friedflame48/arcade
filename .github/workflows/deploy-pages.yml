@@ -1,4 +1,4 @@
-name: Deploy para GitHub Pages
+name: Verificacao do arcade
 
 on:
   push:
@@ -6,17 +6,8 @@ on:
       - main
   workflow_dispatch:
 
-permissions:
-  contents: read
-  pages: write
-  id-token: write
-
-concurrency:
-  group: pages
-  cancel-in-progress: true
-
 jobs:
-  verificar-e-publicar:
+  verificar:
     runs-on: ubuntu-latest
 
     steps:
@@ -30,14 +21,3 @@ jobs:
           test -f arcade/jogoDaCobra\ 2/cobra.html
           test -f arcade/jogo_da_velha2/index_velha.html
           test -f arcade/pong/pong.html
-
-      - name: Configurar GitHub Pages
-        uses: actions/configure-pages@v5
-
-      - name: Preparar arquivos para publicacao
-        uses: actions/upload-pages-artifact@v3
-        with:
-          path: .
-
-      - name: Publicar no GitHub Pages
-        uses: actions/deploy-pages@v4
