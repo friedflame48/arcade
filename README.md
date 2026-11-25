@@ -90,31 +90,26 @@ Nenhuma biblioteca ou dependência externa é necessária.
 ```text
 .
 |-- index.html
+|-- style.css
 |-- README.md
-|-- arcade/
-|   |-- index.html
-|   |-- style.css
-|   |-- jogoDaCobra 2/
-|   |   |-- cobra.html
-|   |   |-- scriptCobra.js
-|   |   `-- styleCobra.css
-|   |-- jogo_da_velha2/
-|   |   |-- index_velha.html
-|   |   |-- jogo_da_velha.js
-|   |   `-- style_velha.css
-|   `-- pong/
-|       |-- pong.html
-|       |-- scriptPong.js
-|       `-- stylePong.css
-|-- assets/
-|-- Untitled.glb
-`-- outros arquivos do site anterior
+|-- jogoDaCobra 2/
+|   |-- cobra.html
+|   |-- scriptCobra.js
+|   `-- styleCobra.css
+|-- jogo_da_velha2/
+|   |-- index_velha.html
+|   |-- jogo_da_velha.js
+|   `-- style_velha.css
+`-- pong/
+    |-- pong.html
+    |-- scriptPong.js
+    `-- stylePong.css
 ```
 
 ## Como executar localmente
 
 1. Baixe ou clone o projeto.
-2. Abra o arquivo `arcade/index.html` diretamente no navegador.
+2. Abra o arquivo `index.html` diretamente no navegador.
 
 Como alternativa, execute um servidor local na pasta do projeto:
 

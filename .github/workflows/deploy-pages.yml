@@ -16,8 +16,8 @@ jobs:
 
       - name: Verificar arquivos principais
         run: |
-          test -f arcade/index.html
-          test -f arcade/style.css
-          test -f arcade/jogoDaCobra\ 2/cobra.html
-          test -f arcade/jogo_da_velha2/index_velha.html
-          test -f arcade/pong/pong.html
+          test -f index.html
+          test -f style.css
+          test -f jogoDaCobra\ 2/cobra.html
+          test -f jogo_da_velha2/index_velha.html
+          test -f pong/pong.html
